@@ -46,3 +46,6 @@ class Database
     return $this->pdo;
   }
 }
+
+// INICIAR LA SESIÓN
+session_start();
