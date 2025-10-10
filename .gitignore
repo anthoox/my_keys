@@ -1,0 +1,42 @@
+# Configuración sensible
+.env
+.env.local
+.env.*.local
+
+# Archivos de subida (imágenes, documentos)
+public/uploads/
+public/uploads/*
+
+# Archivos de base de datos locales
+*.sqlite
+*.db
+migrations.sql
+seed.sql
+
+# Dependencias de Composer (si las instalas)
+vendor/
+
+# Archivos del sistema / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Archivos temporales de PHP
+*.cache
+*.tmp
+*.swp
+*~
+
+# Node.js / NPM (si en algún momento usas npm)
+node_modules/
+package-lock.json
+
+# Ignorar archivos comprimidos, backups o exportaciones
+*.zip
+*.tar
+*.bak
+*.json   # si son backups de datos locales que no quieras subir
+
+# Configuración del IDE
+.idea/
+.vscode/
