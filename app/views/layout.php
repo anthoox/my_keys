@@ -27,6 +27,13 @@
     </div>
   </nav>
 
+  <?php require_once '../controller/users.php' ?>
+  <?php
+  // CONFIGURACIÓN DE PRUEBA MVC
+  $allUsers = new UsersController();
+  echo $allUsers->showAll();
+  
+  ?>
   <div class="container my-4">
     <?php if (isset($content)) echo $content; ?>
   </div>
