@@ -20,29 +20,40 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?controller=UsersController&action=login">Login</a></li>
-          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?controller=UsersController&action=register">Registro</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=users&a=login">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=users&a=register">Registro</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
   <?php
-  require_once __DIR__ . '/../controller/users.php';
-  // CONFIGURACIÓN DE PRUEBA MVC
-  if (isset($_GET['controller']) && class_exists($_GET['controller'])) {
-    $controller = $_GET['controller'];
-    $class = new $controller();
+  //Código para manejar controladores y acciones. Página de manejo centralizada.
 
-    if (isset($_GET['action']) && method_exists($controller, $_GET['action'])) {
-      $action = $_GET['action'];
+  // Incluye el controlador de usuarios
+  require_once __DIR__ . '/../controller/usersController.php';
+  require_once __DIR__ . '/../controller/appsController.php';
+    // Si existe el controlador en la URL, lo asigna a una variable
+  if (isset($_GET['c'])) {
+    $controller_name = $_GET['c'] . 'Controller';
+  } else {
+    echo 'La página que buscas no existe';
+    exit();
+  }
 
-      $class->$action();
+  // Si existe la clase del controlador, crea una instancia
+  if (class_exists($controller_name)) {
+    $controller = new $controller_name();
+    // Si existe la acción/método en la clase, la ejecuta
+    if (isset($_GET['a']) && method_exists($controller, $_GET['a'])) {
+      $action = $_GET['a'];
+
+      $controller->$action();
     } else {
-      echo "La acción no existe.";
+      echo "La acción/método no existe.";
     }
   } else {
-    echo "Clase o controlador no existe.";
+    echo "La Clase no existe.";
   }
   ?>
 
