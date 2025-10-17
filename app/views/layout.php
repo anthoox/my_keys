@@ -28,12 +28,11 @@
   </nav>
 
   <?php
-  //Código para manejar controladores y acciones. Página de manejo centralizada.
+  // Código para manejar controladores y acciones. Página de manejo centralizada.
+  // Incluyir autoload
+  require_once __DIR__ . '/../../public/autoload.php';
 
-  // Incluye el controlador de usuarios
-  require_once __DIR__ . '/../controller/usersController.php';
-  require_once __DIR__ . '/../controller/appsController.php';
-    // Si existe el controlador en la URL, lo asigna a una variable
+  // Si existe el controlador en la URL, lo asigna a una variable
   if (isset($_GET['c'])) {
     $controller_name = $_GET['c'] . 'Controller';
   } else {
