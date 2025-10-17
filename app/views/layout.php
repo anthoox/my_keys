@@ -21,18 +21,24 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-          <li class="nav-item"><a class="nav-link" href="/register">Registro</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?UsersController=prueba">Registro</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <?php require_once __DIR__ . '/../controller/users.php' ?>
   <?php
+  require_once __DIR__ . '/../controller/users.php';
   // CONFIGURACIÓN DE PRUEBA MVC
-  $allUsers = new UsersController();
-  echo $allUsers->showAll();
-  
+  $crearUsuario = new UsersController();
+  $crearUsuario->create();
+  if (isset($_GET['UsersController'])) {
+    $crearUsuario = new UsersController();
+    $action = $_GET['UsersController'];
+
+    $crearUsuario->$action();
+  };
+
   ?>
   <div class="container my-4">
     <?php if (isset($content)) echo $content; ?>
