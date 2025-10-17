@@ -2,18 +2,22 @@
 
 class UsersController {
 
-  public function create() {
+  public function register() {
     // Lógica para mostrar el formulario de creación de usuario
-    require_once __DIR__ . '/../views/auth/register.php';
-  }
-  public function prueba()
-  {
-    // Lógica para mostrar el formulario de creación de usuario
-    // require_once __DIR__ . '/../views/auth/register.php';
+    echo 'Estamos en register.php';
+
     require_once __DIR__ . '/../views/auth/register.php';
 
-    echo 'esto es una prueba';
   }
+
+  public function login()
+  {
+    // Lógica para mostrar el formulario de creación de usuario
+    echo 'Estamos en login.php';
+
+    require_once __DIR__ . '/../views/auth/login.php';
+  }
+
   public function showAll(){
     
     require_once __DIR__ . '/../models/users.php';

@@ -20,8 +20,8 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?UsersController=prueba">Registro</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?controller=UsersController&action=login">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?controller=UsersController&action=register">Registro</a></li>
         </ul>
       </div>
     </div>
@@ -30,16 +30,22 @@
   <?php
   require_once __DIR__ . '/../controller/users.php';
   // CONFIGURACIÓN DE PRUEBA MVC
-  $crearUsuario = new UsersController();
-  $crearUsuario->create();
-  if (isset($_GET['UsersController'])) {
-    $crearUsuario = new UsersController();
-    $action = $_GET['UsersController'];
+  if (isset($_GET['controller']) && class_exists($_GET['controller'])) {
+    $controller = $_GET['controller'];
+    $class = new $controller();
 
-    $crearUsuario->$action();
-  };
+    if (isset($_GET['action']) && method_exists($controller, $_GET['action'])) {
+      $action = $_GET['action'];
 
+      $class->$action();
+    } else {
+      echo "La acción no existe.";
+    }
+  } else {
+    echo "Clase o controlador no existe.";
+  }
   ?>
+
   <div class="container my-4">
     <?php if (isset($content)) echo $content; ?>
   </div>
