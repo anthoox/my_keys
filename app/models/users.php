@@ -1,12 +1,13 @@
 <?php
 
-class User {
+class User
+{
   public $id;
   public $username;
   public $email;
   public $password_hash;
   public $created_at;
-  
+
 
   /**
    * Get the value of id
@@ -101,6 +102,6 @@ class User {
   public function getAllUsers()
   {
     // $db = Database::getInstance()->getConnection();
-    return 'Todos los usuerios';
+    return 'Todos los usuarios';
   }
 }

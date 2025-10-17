@@ -27,7 +27,7 @@
     </div>
   </nav>
 
-  <?php require_once '../controller/users.php' ?>
+  <?php require_once __DIR__ . '/../controller/users.php' ?>
   <?php
   // CONFIGURACIÓN DE PRUEBA MVC
   $allUsers = new UsersController();
