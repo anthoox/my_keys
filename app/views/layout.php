@@ -35,6 +35,8 @@
   // Si existe el controlador en la URL, lo asigna a una variable
   if (isset($_GET['c'])) {
     $controller_name = $_GET['c'] . 'Controller';
+    // var_dump($controller_name);
+    // die();
   } else {
     echo 'La página que buscas no existe';
     exit();
@@ -42,7 +44,10 @@
 
   // Si existe la clase del controlador, crea una instancia
   if (class_exists($controller_name)) {
+
     $controller = new $controller_name();
+    // var_dump($controller_name);
+    // die();
     // Si existe la acción/método en la clase, la ejecuta
     if (isset($_GET['a']) && method_exists($controller, $_GET['a'])) {
       $action = $_GET['a'];

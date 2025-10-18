@@ -6,7 +6,7 @@
  * Lee las credenciales desde el archivo .env.
  */
 
-class Database
+class DataBase
 {
   private static $instance = null;
   private $pdo;
@@ -14,7 +14,8 @@ class Database
   private function __construct()
   {
     // Cargar variables desde .env
-    $env = parse_ini_file(__DIR__ . '/../../.env');
+    $env = parse_ini_file(__DIR__ . '/../.env');
+
 
     $host = $env['DB_HOST'];
     $dbname = $env['DB_NAME'];
@@ -36,7 +37,7 @@ class Database
   public static function getInstance()
   {
     if (self::$instance === null) {
-      self::$instance = new Database();
+      self::$instance = new DataBase();
     }
     return self::$instance;
   }
@@ -47,5 +48,3 @@ class Database
   }
 }
 
-// INICIAR LA SESIÓN
-session_start();

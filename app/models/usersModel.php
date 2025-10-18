@@ -99,9 +99,19 @@ class User
     return $this;
   }
 
-  public function getAllUsers()
+
+
+  // probando aqui la conexion
+  public $db;
+  public function __construct()
   {
-    // $db = Database::getInstance()->getConnection();
-    return 'Todos los usuarios';
+
+    $this->db = DataBase::getInstance()->getConnection();
+  }
+  public function getDb()
+  {
+    // var_dump($this->db);
+    // die();
+    echo 'probando la bse de datos';
   }
 }
