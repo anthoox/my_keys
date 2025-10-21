@@ -22,24 +22,27 @@ class AuthController
     require_once __DIR__ . '/../models/authModel.php';
     require_once __DIR__ . '/../../core/helpers/validatorForm.php';
     require_once __DIR__ . '/../views/auth/register.php';
+    // Validar y procesar el formulario de registro
     $data = validateRegistrationForm();
-    if(isset($data)){
+    if (isset($data) && !empty($data)) {
       $authModel = new AuthModel();
+      // Verificar si el correo ya está registrado
       $result = $authModel->emailExists($data['email']);
-      if($result){
+      if ($result) {
         echo "<div class='d-flex justify-content-center align-items-center  w-100'>
         <div class='alert alert-danger col-6'>El correo ya está registrado.</div>";
-    }else{
+      } else {
+        // Registrar al usuario
         $registerResult = $authModel->createUser($data['username'], $data['email'], password_hash($data['password'], PASSWORD_BCRYPT));
-        if($registerResult){
+        // Mostrar mensaje de éxito o error
+        if ($registerResult) {
           echo "<div class='d-flex justify-content-center align-items-center  w-100'>
           <div class='alert alert-success col-6'>Registro exitoso. Ahora puedes <a href='http://localhost/keys/public/?c=auth&a=showLog'>iniciar sesión</a>.</div>";
-        }else{
+        } else {
           echo "<div class='alert alert-danger'>Error al registrar el usuario. Inténtalo de nuevo.</div></div>";
         }
       }
     }
-
   }
 
 
