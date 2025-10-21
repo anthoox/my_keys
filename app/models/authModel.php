@@ -19,13 +19,13 @@ class AuthModel
 
   public function createUser(string $username, string $email, string $password): bool
   {
-    $hash = password_hash($password, PASSWORD_DEFAULT);
-    $sql = "INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password)";
+
+    $sql = "INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)";
     $stmt = $this->db->prepare($sql);
     return $stmt->execute([
       'username' => $username,
       'email' => $email,
-      'password' => $hash
+      'password_hash' => $password
     ]);
   }
 
@@ -36,5 +36,21 @@ class AuthModel
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     return $user ?: null;
+  }
+
+  public function loginUser(string $email, string $password): ?array
+  {
+    $sql = "SELECT * FROM users WHERE email = :email";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute(['email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user['password_hash'])) {
+      // Contraseña correcta
+      return $user;
+    }
+
+    // Usuario no encontrado o contraseña incorrecta
+    return null;
   }
 }

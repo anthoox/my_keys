@@ -14,6 +14,33 @@ class AuthController
   public function login()
   {
     // Validar credenciales con el modelo User
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+      $email = trim($_POST['email'] ?? '');
+      $password = trim($_POST['password'] ?? '');
+
+      if (empty($email) || empty($password)) {
+        echo "Completa todos los campos";
+        return;
+      }
+
+      require_once __DIR__ . '/../models/AuthModel.php';
+      $authModel = new AuthModel();
+      $user = $authModel->loginUser($email, $password);
+
+      if ($user) {
+        session_start();
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        header("Location: /keys/public/?c=services&a=alls");
+        exit();
+      } else {
+        echo "Usuario o contraseña incorrecta";
+      }
+    } else {
+      echo "Método no permitido";
+    }
+  
   }
 
   public function register()
