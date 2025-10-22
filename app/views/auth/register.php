@@ -21,3 +21,14 @@
     </form>
   </div>
 </div>
+
+<?php
+if (isset($_SESSION['errors'])) {
+  showError($_SESSION['errors']); // limpiar después de mostrar
+  unset($_SESSION['errors']);
+  session_destroy();
+}
+
+  
+
+?>

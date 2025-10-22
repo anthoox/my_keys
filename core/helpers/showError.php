@@ -16,7 +16,5 @@ function showError($errors)
     }
     echo "</ul></div></div>";
   }
-  if (isset($_SESSION['errors'])) {
-    unset($_SESSION['errors']);
-  }
+
 }

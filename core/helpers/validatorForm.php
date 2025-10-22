@@ -4,10 +4,6 @@ function validateRegistrationForm()
 {
   require_once __DIR__ . '/../../core/helpers/showError.php';
 
-  // Mostrar errores si existen
-  if (isset($_SESSION['errors'])) {
-    showError($_SESSION['errors']); // limpiar después de mostrar
-  }
   // Validación del formulario
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
@@ -29,7 +25,7 @@ function validateRegistrationForm()
     }
 
     // Validar email
-    if (empty($email) || $email === '') {
+    if (empty($email)) {
       $errors['email'] = "El correo electrónico es obligatorio.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
       $errors['email'] = "El correo no tiene un formato válido.";

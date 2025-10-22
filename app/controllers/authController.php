@@ -18,7 +18,9 @@ class AuthController
 
     // Si la petición es POST, procesar el formulario
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+      /**
+       * TODOS añadir validador de formulario y ahorrar metodo post
+       */
       $email = trim($_POST['email'] ?? '');
       $password = trim($_POST['password'] ?? '');
 
@@ -45,7 +47,6 @@ class AuthController
         exit();
       } else {
         // Credenciales incorrectas
-        $error = 'Usuario o contraseña incorrecta.';
         require_once __DIR__ . '/../views/auth/login.php';
         exit();
       }
@@ -71,38 +72,32 @@ class AuthController
 
     require_once __DIR__ . '/../models/authModel.php';
     require_once __DIR__ . '/../../core/helpers/validatorForm.php';
-    require_once __DIR__ . '/../views/auth/register.php';
+
     // Validar y procesar el formulario de registro
     $data = validateRegistrationForm();
+
     if (isset($data) && !empty($data)) {
       $authModel = new AuthModel();
+
       // Verificar si el correo ya está registrado
-      if(isset($data['email']) && $data['email'] != '') {
+      if (isset($data['email']) && $data['email'] !== '') {
         $result = $authModel->emailExists($data['email']);
+
         if ($result) {
-          /**
-           * TODO imprimir errores de una función
-           */
-          echo "<div class='d-flex justify-content-center align-items-center  w-100'>
-        <div class='alert alert-danger col-6'>El correo ya está registrado.</div>";
-        // showError($result);
+          // Guardar el error en variable
+          $errorMessage = "El correo ya está registrado.";
         } else {
           // Registrar al usuario
-          $registerResult = $authModel->createUser($data['username'], $data['email'], password_hash($data['password'], PASSWORD_BCRYPT));
-          // Mostrar mensaje de éxito o error
-          if ($registerResult) {
-            echo "<div class='d-flex justify-content-center align-items-center  w-100'>
-          <div class='alert alert-success col-6'>Registro exitoso. Ahora puedes <a href='http://localhost/keys/public/?c=auth&a=showLog'>iniciar sesión</a>.</div>";
-          } else {
-            // showError($result);
+          $registerResult = $authModel->createUser(
+            $data['username'],
+            $data['email'],
+            password_hash($data['password'], PASSWORD_BCRYPT)
+          );
 
-            echo "<div class='d-flex justify-content-center align-items-center  w-100'>
-          <div class='alert alert-success col-6'>Error al registrar el usuario. Inténtalo de nuevo<a href='http://localhost/keys/public/?c=auth&a=showLog'>iniciar sesión</a>.</div>";
-          }
         }
       }
-
     }
+    require_once __DIR__ . '/../views/auth/register.php';
   }
 
 
