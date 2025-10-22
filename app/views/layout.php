@@ -20,8 +20,8 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=auth&a=showLog">Login</a></li>
-          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=auth&a=showReg">Registro</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=auth&a=login">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=auth&a=register">Registro</a></li>
         </ul>
       </div>
     </div>

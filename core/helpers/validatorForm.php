@@ -4,8 +4,7 @@ function validateRegistrationForm()
 {
   require_once __DIR__ . '/../../core/helpers/showError.php';
 
-  // // Mostrar errores si existen
-  session_start();
+  // Mostrar errores si existen
   if (isset($_SESSION['errors'])) {
     showError($_SESSION['errors']); // limpiar después de mostrar
   }
