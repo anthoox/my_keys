@@ -41,7 +41,7 @@ function validateRegistrationForm()
     if (empty($password)) {
       $errors['password'] = "La contraseña es obligatoria.";
     } elseif (strlen($password) < 6) {
-      $errors['password'] = "La contraseña debe tener al menos 6 caracxcvteres.";
+      $errors['password'] = "La contraseña debe tener al menos 6 caracteres.";
     } else {
       $data['password'] = $password;
     }

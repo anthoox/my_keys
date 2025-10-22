@@ -80,8 +80,12 @@ class AuthController
       if(isset($data['email']) && $data['email'] != '') {
         $result = $authModel->emailExists($data['email']);
         if ($result) {
+          /**
+           * TODO imprimir errores de una función
+           */
           echo "<div class='d-flex justify-content-center align-items-center  w-100'>
         <div class='alert alert-danger col-6'>El correo ya está registrado.</div>";
+        // showError($result);
         } else {
           // Registrar al usuario
           $registerResult = $authModel->createUser($data['username'], $data['email'], password_hash($data['password'], PASSWORD_BCRYPT));
@@ -90,6 +94,8 @@ class AuthController
             echo "<div class='d-flex justify-content-center align-items-center  w-100'>
           <div class='alert alert-success col-6'>Registro exitoso. Ahora puedes <a href='http://localhost/keys/public/?c=auth&a=showLog'>iniciar sesión</a>.</div>";
           } else {
+            // showError($result);
+
             echo "<div class='d-flex justify-content-center align-items-center  w-100'>
           <div class='alert alert-success col-6'>Error al registrar el usuario. Inténtalo de nuevo<a href='http://localhost/keys/public/?c=auth&a=showLog'>iniciar sesión</a>.</div>";
           }
