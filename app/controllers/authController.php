@@ -15,40 +15,42 @@ class AuthController
       header("Location: /keys/public/?c=services&a=alls");
       exit();
     }
+    require_once __DIR__ . '/../../core/helpers/validatorForm.php';
 
-    /**
-     * TODOS añadir validador de formulario con su mostrar errores y ahorrar metodo post
-     */
-    $email = trim($_POST['email'] ?? '');
-    $password = trim($_POST['password'] ?? '');
+    $data = validateRegistrationForm();
+    // var_dump($data);
+    // die();
+    if (isset($data) && !empty($data)) {
+      $authModel = new AuthModel();
+      // Validar campos
+      if (empty($data['email']) || empty($data['password'])) {
+        $_SESSION['errors'] = "Completa todos los campos.";
+        require_once __DIR__ . '/../views/auth/login.php';
+        return;
+      }
 
-    // Validar campos
-    if (empty($email) || empty($password)) {
-      $error = "Completa todos los campos.";
-      require_once __DIR__ . '/../views/auth/login.php';
-      return;
+      // Cargar modelo
+      require_once __DIR__ . '/../models/AuthModel.php';
+      $authModel = new AuthModel();
+      $user = $authModel->loginUser($data['email'], $data['password']);
+
+      // Si las credenciales son correctas
+      if ($user) {
+        $_SESSION['user'] = [
+          'user_id' => $user['id'],
+          'username' => $user['username']
+        ];
+
+        header("Location: /keys/public/?c=services&a=alls");
+        exit();
+      } else {
+        // Credenciales incorrectas
+        $_SESSION['errors'] = "Usuario o contraseña incorrectos.";
+        require_once __DIR__ . '/../views/auth/login.php';
+        exit();
+      }
     }
-
-    // Cargar modelo
-    require_once __DIR__ . '/../models/AuthModel.php';
-    $authModel = new AuthModel();
-    $user = $authModel->loginUser($email, $password);
-
-    // Si las credenciales son correctas
-    if ($user) {
-      $_SESSION['user'] = [
-        'user_id' => $user['id'],
-        'username' => $user['username']
-      ];
-
-      header("Location: /keys/public/?c=services&a=alls");
-      exit();
-    } else {
-      // Credenciales incorrectas
-      $error = "Email o contraseña incorrectos.";
-      require_once __DIR__ . '/../views/auth/login.php';
-      exit();
-    }
+    require_once __DIR__ . '/../views/auth/login.php';
   }
 
   public function register()
