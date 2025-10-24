@@ -1,3 +1,9 @@
+<?php
+// inicio de sesión tras el login ya que al redirigir con header() pierde la sesión
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -19,9 +25,17 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=auth&a=login">Login</a></li>
-          <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=auth&a=register">Registro</a></li>
+        <ul class="navbar-nav ms-auto d-flex align-items-center">
+
+          <?php if (isset($_SESSION['user'])) : ?>
+
+            <li class="nav-item"><a class="nav-link" href="#">Mi cuenta</a></li>
+
+            <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=auth&a=logout">Salir</a></li>
+          <?php else: ?>
+            <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=auth&a=login">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=auth&a=register">Registro</a></li>
+          <?php endif; ?>
         </ul>
       </div>
     </div>
