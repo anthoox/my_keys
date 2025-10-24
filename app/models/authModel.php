@@ -29,18 +29,9 @@ class AuthModel
     ]);
   }
 
-  public function getUserByEmail(string $email): ?array
-  {
-    $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute(['email' => $email]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $user ?: null;
-  }
-
   public function loginUser(string $email, string $password): ?array
   {
-    $sql = "SELECT * FROM users WHERE email = :email";
+    $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
     $stmt = $this->db->prepare($sql);
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);

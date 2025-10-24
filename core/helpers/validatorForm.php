@@ -12,7 +12,7 @@ function validateRegistrationForm()
 
     $errors = [];
     $data = [];
-    // // // Validar usuario
+    // Validar usuario
     $pattern = "/^[a-zA-Z0-9_.-]+$/";
     if (empty($username)) {
       $errors['username'] = "El nombre de usuario es obligatorio.";
