@@ -67,6 +67,7 @@ function validateServiceForm()
 
   $serviceName = trim($_POST['service_name'] ?? '');
   $password = trim($_POST['password'] ?? '');
+  $userName = trim($_POST['user_name'] ?? '');
   $category = trim($_POST['category'] ?? '');
   $notes = trim($_POST['notes'] ?? '');
 
@@ -82,6 +83,12 @@ function validateServiceForm()
     $errors['password'] = "La contraseña es obligatoria.";
   } else {
     $data['password'] = $password;
+  }
+
+  if (empty($userName)) {
+    $errors['user_name'] = "El nombre de usuario es obligatorio.";
+  } else {
+    $data['user_name'] = $userName;
   }
 
   // Asignar categoría y notas (permitir valores nulos)

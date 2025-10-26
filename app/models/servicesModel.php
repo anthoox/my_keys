@@ -49,7 +49,7 @@ class ServicesModel
   {
     try {
       $stmt = $this->db->prepare("
-            SELECT s.id, s.name,s.created_at, c.password_encrypted
+            SELECT s.id, s.name,c.updated_at, c.password_encrypted, c.username
             FROM services s
             LEFT JOIN credentials c ON s.id = c.service_id
             WHERE s.user_id = :user_id
@@ -60,6 +60,7 @@ class ServicesModel
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
       error_log("Error al obtener servicios: " . $e->getMessage());
+
       return [];
     }
   }

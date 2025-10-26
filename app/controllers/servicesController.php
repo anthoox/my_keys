@@ -62,11 +62,13 @@ class ServicesController
     require_once __DIR__ . '/../../core/helpers/validatorForm.php';
     $data = validateServiceForm();
 
+
     // Si hay errores de validación
     if (!$data) {
       header("Location: /keys/public/?c=services&a=alls");
       exit();
     }
+
 
     // Cargar modelos
     require_once __DIR__ . '/../models/servicesModel.php';
@@ -77,7 +79,8 @@ class ServicesController
 
     // Crear servicio
     $userId = $_SESSION['user']['user_id'];
-    $userName = $_SESSION['user']['username'];
+    $userName = $data['user_name'] ;
+
 
     $serviceId = $serviceModel->createService($userId, $data['service_name'], $data['category'], $data['notes']);
 
