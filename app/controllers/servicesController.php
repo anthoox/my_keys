@@ -29,15 +29,12 @@ class ServicesController
     // Obtener servicios del usuario actual
     $userId = $_SESSION['user']['user_id'];
     $services = $serviceModel->getServicesByUser($userId);
-    // echo 'probando';
-    // var_dump($services);
-    // die();
+
     if (!empty($services)) {
       // mostrar servicios
-      foreach ($services as $service) {
-        // Aquí puedes procesar cada servicio si es necesario
-        var_dump($service) ;
-      }
+      require_once __DIR__ . '/../../core/helpers/renderServices.php';
+      renderServices($services);
+
     } else {
       $_SESSION['errors'] = "Error al cargar los servicios.";
     }
