@@ -54,3 +54,46 @@ function validateRegistrationForm()
     }
   }
 }
+function validateServiceForm()
+{
+  require_once __DIR__ . '/../../core/helpers/showError.php';
+
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    return null;
+  }
+
+  $errors = [];
+  $data = [];
+
+  $serviceName = trim($_POST['service_name'] ?? '');
+  $password = trim($_POST['password'] ?? '');
+  $category = trim($_POST['category'] ?? '');
+  $notes = trim($_POST['notes'] ?? '');
+
+  // Validar nombre del servicio
+  if (empty($serviceName)) {
+    $errors['service_name'] = "El nombre del servicio es obligatorio.";
+  } else {
+    $data['service_name'] = $serviceName;
+  }
+
+  // Validar contraseña
+  if (empty($password)) {
+    $errors['password'] = "La contraseña es obligatoria.";
+  } else {
+    $data['password'] = $password;
+  }
+
+  // Asignar categoría y notas (permitir valores nulos)
+  $data['category'] = $category ?: null;
+  $data['notes'] = $notes ?: null;
+
+  // Si hay errores, guardarlos y devolver null
+  if (!empty($errors)) {
+    $_SESSION['errors'] = $errors;
+    return null;
+  }
+
+  // Devolver datos válidos
+  return $data;
+}

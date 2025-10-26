@@ -98,6 +98,9 @@ class AuthController
     }
     require_once __DIR__ . '/../views/auth/register.php';
     if ($registerResult) {
+      /** 
+       *  TODO añadir metodo showError para mostrar errores o exito
+       * */ 
       echo " <div class='p-2'><div class='d-flex justify-content-center align-items-center  w-100 mt-3'>
     <div class='alert alert-success col-6'>Usuario registrado, ya puedes <a href='http://localhost/keys/public/?c=auth&a=login'>iniciar sesión.</a></div></div></div>";
     }
