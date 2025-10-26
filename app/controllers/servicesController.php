@@ -48,12 +48,14 @@ class ServicesController
 
     // Crear servicio
     $userId = $_SESSION['user']['user_id'];
+    $userName = $_SESSION['user']['username'];
 
     $serviceId = $serviceModel->createService($userId, $data['service_name'], $data['category'], $data['notes']);
 
     if ($serviceId) {
+
       // Crear credenciales
-      $credResult = $credModel->createCredencial($serviceId, $data['password'], $data['notes']);
+      $credResult = $credModel->createCredencial($serviceId, $userName, $data['password']);
 
       if ($credResult) {
         /** 
