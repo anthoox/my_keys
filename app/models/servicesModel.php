@@ -45,11 +45,16 @@ class ServicesModel
   /**
    * Obtiene todos los servicios del usuario
    */
-  public function getAllByUser($userId)
+  public function getServicesByUser($userId)
   {
     try {
-      $query = "SELECT * FROM services WHERE user_id = :user_id ORDER BY id DESC";
-      $stmt = $this->db->prepare($query);
+      $stmt = $this->db->prepare("
+            SELECT s.id, s.name,s.created_at, c.password_encrypted
+            FROM services s
+            LEFT JOIN credentials c ON s.id = c.service_id
+            WHERE s.user_id = :user_id
+            ORDER BY s.created_at DESC
+        ");
       $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
       $stmt->execute();
       return $stmt->fetchAll(PDO::FETCH_ASSOC);

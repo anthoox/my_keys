@@ -20,16 +20,17 @@ class CredentialsModel
   public function createCredencial($serviceId, $userName, $password)
   {
     try {
+      // Encriptar la contraseña antes de guardarla
+      $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
 
       $sql = "INSERT INTO credentials (service_id, username, password_encrypted) 
             VALUES (:service_id, :username, :password_encrypted)";
-// var_dump($sql);
-// var_dump($password);
-// die();
+
       $stmt = $this->db->prepare($sql);
       $stmt->bindParam(':service_id', $serviceId);
       $stmt->bindParam(':username', $userName);
-      $stmt->bindParam(':password_encrypted', $password);
+      $stmt->bindParam(':password_encrypted', $hashedPassword);
       if ($stmt->execute()) {
         return true;
       }

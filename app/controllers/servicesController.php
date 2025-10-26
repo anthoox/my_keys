@@ -9,10 +9,42 @@ class ServicesController
     // Obtenemos la conexión PDO desde la clase DataBase
     $this->db = DataBase::getInstance()->getConnection();
   }
+
   public function alls()
   {
-    // Lógica para mostrar el formulario de creación de usuario
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
+
+    // Verificar que el usuario esté logueado
+    if (!isset($_SESSION['user']['user_id'])) {
+      header("Location: /keys/public/?c=auth&a=login");
+      exit();
+    }
+
+    // Cargar el modelo
+    require_once __DIR__ . '/../models/ServicesModel.php';
+    $serviceModel = new ServicesModel();
+
+    // Obtener servicios del usuario actual
+    $userId = $_SESSION['user']['user_id'];
+    $services = $serviceModel->getServicesByUser($userId);
+    // echo 'probando';
+    // var_dump($services);
+    // die();
+    if (!empty($services)) {
+      // mostrar servicios
+      foreach ($services as $service) {
+        // Aquí puedes procesar cada servicio si es necesario
+        var_dump($service) ;
+      }
+    } else {
+      $_SESSION['errors'] = "Error al cargar los servicios.";
+    }
+
+
     require_once __DIR__ . '/../views/services/services.php';
+    die();
   }
 
   /** 
