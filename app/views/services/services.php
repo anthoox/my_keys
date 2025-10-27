@@ -1,7 +1,7 @@
 <!-- view: services/services.php -->
 
 <!-- Ejemplo de tarjeta -->
-<div class="container my-5">
+<div class="container mt-5">
 
 
 </div>

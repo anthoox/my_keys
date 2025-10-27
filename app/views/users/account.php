@@ -1,4 +1,4 @@
-<div class="container col-6">
+<div class="container  col-sm-12 col-md-6">
   <h1 class="mt-5">Mi cuenta</h1>
   <form class="row g-3 mt-3">
     <div class="mb-3">
