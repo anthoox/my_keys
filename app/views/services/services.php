@@ -55,7 +55,7 @@
   </div>
 </div>
 <!-- Modal para editar servicio -->
-<div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+<div class="modal fade " id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form id="editServiceForm" method="POST" action="/services/update">
       <div class="modal-content">
@@ -90,4 +90,4 @@
 
 
 
-<?= require_once __DIR__  . '/../../../core/components/footer.php' ?>
+<?php require_once __DIR__  . '/../../../core/components/footer.php' ?>
