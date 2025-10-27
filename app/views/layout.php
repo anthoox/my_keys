@@ -28,8 +28,9 @@ if (session_status() === PHP_SESSION_NONE) {
         <ul class="navbar-nav ms-auto d-flex align-items-center">
 
           <?php if (isset($_SESSION['user'])) : ?>
+            <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=services&a=alls">Inicio</a></li>
 
-            <li class="nav-item"><a class="nav-link" href="#">Mi cuenta</a></li>
+            <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=users&a=account">Mi cuenta</a></li>
 
             <li class="nav-item"><a class="nav-link" href="http://localhost/keys/public/?c=auth&a=logout">Salir</a></li>
           <?php else: ?>
@@ -41,13 +42,4 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
   </nav>
 
-  <div class="container mt-4">
-    <?php
-    // Aquí se incluirán las vistas específicas según el controlador y la acción
-    ?>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+  <div class="container ss mt-4">

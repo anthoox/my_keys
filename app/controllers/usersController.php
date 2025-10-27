@@ -23,13 +23,10 @@ class UsersController {
   /**
    * Obtener todos los servicios asociados a un usuario
    */
-  public function prueba()
+  public function account()
   {
 
-    require_once __DIR__ . '/../models/usersModel.php';
-    $prueba_datos = new User();
-    $prueba_datos->getDb();
-   echo 'Estamos en prueba.php';
+    require_once __DIR__ . '/../views/users/account.php';
   }
 
 }

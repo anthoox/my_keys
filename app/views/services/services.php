@@ -61,3 +61,5 @@
 </div>
 
 </div>
+
+<?= require_once __DIR__  . '/../../../core/components/footer.php' ?>
