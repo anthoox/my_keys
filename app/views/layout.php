@@ -1,5 +1,8 @@
 <?php
-// inicio de sesión tras el login ya que al redirigir con header() pierde la sesión
+/**
+ * * Inicio de sesión tras el login ya que al redirigir con header() pierde la sesión 
+ * */
+
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
@@ -42,4 +45,4 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
   </nav>
 
-  <div class="container ss mt-4">
+  <div class="container mt-4">

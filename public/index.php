@@ -9,7 +9,9 @@ if (empty($_GET)) {
 
   exit();
 }
-
+/** 
+ * TODO Eliminar mensajes y llevar a vista de login mostrando el erro modo dev y quitarlo
+*/
 require_once '../app/views/layout.php';
 
 if (isset($_GET)) {
