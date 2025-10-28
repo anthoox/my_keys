@@ -2,13 +2,6 @@
 
 class ServicesController
 {
-  private $db;
-
-  public function __construct()
-  {
-    // Obtenemos la conexión PDO desde la clase DataBase
-    $this->db = DataBase::getInstance()->getConnection();
-  }
 
   public function alls()
   {
@@ -59,37 +52,39 @@ class ServicesController
     require_once __DIR__ . '/../../core/helpers/validatorForm.php';
     $data = validateServiceForm();
 
-
-    // Si hay errores de validación
+    // Validación
     if (!$data) {
       header("Location: /keys/public/?c=services&a=alls");
       exit();
     }
 
-
-    // Cargar modelos
+    // Cargar modelos y entidades
     require_once __DIR__ . '/../models/servicesModel.php';
     require_once __DIR__ . '/../models/credentialsModel.php';
+    require_once __DIR__ . '/../entities/Credential.php';
 
     $serviceModel = new ServicesModel();
     $credModel = new CredentialsModel();
 
     // Crear servicio
     $userId = $_SESSION['user']['user_id'];
-    $userName = $data['user_name'] ;
+    $userName = $data['user_name'];
 
-
-    $serviceId = $serviceModel->createService($userId, $data['service_name'], $data['category'], $data['notes']);
+    $serviceId = $serviceModel->createService(
+      $userId,
+      $data['service_name'],
+      $data['category'],
+      $data['notes']
+    );
 
     if ($serviceId) {
+      // Crear credencial como objeto
+      $credential = new Credential($serviceId, $userName);
+      $credential->setPassword($data['password']);
 
-      // Crear credenciales
-      $credResult = $credModel->createCredencial($serviceId, $userName, $data['password']);
+      $credResult = $credModel->createCredential($credential);
 
       if ($credResult) {
-        /** 
-         *  TODO añadir metodo showError para mostrar errores o exito
-         * */
         $_SESSION['success'] = "Servicio añadido correctamente.";
       } else {
         $_SESSION['errors'] = "No se pudieron guardar las credenciales.";
@@ -98,7 +93,7 @@ class ServicesController
       $_SESSION['errors'] = "Error al crear el servicio.";
     }
 
-    // Redirigir de vuelta
+    // Redirigir
     header("Location: /keys/public/?c=services&a=alls");
     exit();
   }
