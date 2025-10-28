@@ -44,9 +44,6 @@ class ServicesController
     die();
   }
 
-  /** 
-   * *  futura funcion alls para mostrar todos los servicios
-   * */
   public function store()
   {
     if (session_status() === PHP_SESSION_NONE) {

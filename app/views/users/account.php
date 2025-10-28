@@ -19,9 +19,12 @@
       <button type="submit" class="btn btn-primary col-12">Guardar</button>
     </div>
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-danger col-6 mt-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <button type="button" class="btn btn-primary col-6 mt-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Cambiar contraseña
     </button>
+    <div class="col-12 mt-2">
+      <button type="submit" class="btn btn-danger col-12">Eliminar cuenta</button>
+    </div>
   </form>
 
 
@@ -45,7 +48,11 @@
     </form>
   </div>
 
-
+  <?php
+  /**
+   * TODO Añadir funcionalidad
+   */
+  ?>
 </div>
 
 <?= require_once __DIR__  . '/../../../core/components/footer.php' ?>

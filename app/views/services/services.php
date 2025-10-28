@@ -55,12 +55,13 @@
   </div>
 </div>
 <!-- Modal para editar servicio -->
+
 <div class="modal fade " id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form id="editServiceForm" method="POST" action="/services/update">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editServiceModalLabel">Editar Servicio</h5>
+          <h5 class="modal-title" id="editServiceModalLabel">Editar</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
@@ -86,8 +87,31 @@
     </form>
   </div>
 </div>
+<!-- Modal para eliminar sevicio -->
 
-
-
+<div class="modal fade " id="delServiceModal" tabindex="-1" aria-labelledby="delServiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="delServiceForm" method="POST" action="/services/delete">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="delServiceModalLabel">Eliminar</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p>¿Desea eliminar esta contaseña?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Eliminar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<?php
+/**
+ * TODO Añadir funcionalidad
+ */
+?>
 
 <?php require_once __DIR__  . '/../../../core/components/footer.php' ?>
