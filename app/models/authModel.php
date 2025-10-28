@@ -29,15 +29,22 @@ class AuthModel
     ]);
   }
 
-  public function loginUser(string $email, string $password): ?array
+  public function loginUser(string $email, string $password): ?object
   {
+    require_once __DIR__ . '/usersModel.php';
     $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
     $stmt = $this->db->prepare($sql);
     $stmt->execute(['email' => $email]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && password_verify($password, $user['password_hash'])) {
-      // Contraseña correcta
+    if ($data && password_verify($password, $data['password_hash'])) {
+      $user = new User(
+        $data['id'],
+        $data['username'],
+        $data['email'],
+        $data['password_hash'],
+        $data['created_at']
+      );
       return $user;
     }
 

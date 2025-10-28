@@ -37,8 +37,10 @@ class AuthController
       // Si las credenciales son correctas
       if ($user) {
         $_SESSION['user'] = [
-          'user_id' => $user['id'],
-          'username' => $user['username']
+          'user_id' => $user->getId(),
+          'username' => $user->getUsername(),
+          'email' => $user->getEmail(),
+          'password' => $user->getPasswordHash()
         ];
 
         header("Location: /keys/public/?c=services&a=alls");
