@@ -31,7 +31,7 @@ class AuthModel
 
   public function loginUser(string $email, string $password): ?object
   {
-    require_once __DIR__ . '/usersModel.php';
+    require_once __DIR__ . '/../entities/user.php';
     $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
     $stmt = $this->db->prepare($sql);
     $stmt->execute(['email' => $email]);
