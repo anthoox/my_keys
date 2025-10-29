@@ -22,10 +22,10 @@
             <input type="password" class="form-control" id="password" name="password" required>
           </div>
 
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="category" class="form-label">Categoría (opcional)</label>
             <input type="text" class="form-control" id="category" name="category">
-          </div>
+          </div> -->
 
           <div class="mb-3">
             <label for="notes" class="form-label">Notas (opcional)</label>
