@@ -19,6 +19,9 @@ class ServicesController
     require_once __DIR__ . '/../models/ServicesModel.php';
     $serviceModel = new ServicesModel();
 
+    /**
+     * TODO getServicesByUser DEBE DEVOLVER UN OBJETO!!! - RETOCAR
+     */
     // Obtener servicios del usuario actual
     $userId = $_SESSION['user']['user_id'];
     $services = $serviceModel->getServicesByUser($userId);
