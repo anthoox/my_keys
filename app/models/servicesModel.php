@@ -1,4 +1,5 @@
-<?php 
+<?php
+require_once __DIR__ . '/../entities/Service.php';
 class ServicesModel
 {
   private $db;
@@ -49,7 +50,7 @@ class ServicesModel
   {
     try {
       $stmt = $this->db->prepare("
-            SELECT s.id, s.name,c.updated_at, c.password_encrypted, c.username
+            SELECT s.*,c.updated_at, c.password_encrypted, c.username
             FROM services s
             LEFT JOIN credentials c ON s.id = c.service_id
             WHERE s.user_id = :user_id
@@ -57,10 +58,25 @@ class ServicesModel
         ");
       $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
       $stmt->execute();
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $services = [];
+      foreach ($rows as $row) {
+        // var_dump($row);
+        $services[] = new Service(
+          $row['id'],
+          $row['user_id'],
+          $row['category_id'] ?? '',
+          $row['name'],
+          $row['notes'] ?? null,
+          $row['created_at'] ?? null,
+          $row['updated_at'] ?? null,
+          $row['username'] ?? null
+        );
+      }
+      return $services;
     } catch (PDOException $e) {
       error_log("Error al obtener servicios: " . $e->getMessage());
-
       return [];
     }
   }

@@ -12,9 +12,11 @@ function renderServices(array $services)
   }
 
   foreach ($services as $service) {
-    $serviceName = htmlspecialchars($service['name']);
-    $userName = htmlspecialchars($service['username'] ?? 'No especificado');
-    $updatedAtRaw = $service['updated_at'] ?? null;
+
+    $serviceID = htmlspecialchars($service->getId());
+    $serviceName = htmlspecialchars($service->getName());
+    $userName = htmlspecialchars($service->getUsername() ?? 'No especificado');
+    $updatedAtRaw = $service->getUpdatedAt();
     $updatedAt = $updatedAtRaw ? date('Y-m-d', strtotime($updatedAtRaw)) : 'Sin fecha';
 
     echo "
@@ -25,7 +27,7 @@ function renderServices(array $services)
           <div>
             <div class='btn btn-sm btn-show p-1 edit-service-btn' data-bs-toggle='modal' 
   data-bs-target='#editServiceModal'
-  data-id='{$service['id']}'
+  data-id='{$serviceID}'
   data-name='{$serviceName}'
   data-user='{$userName}'
 
