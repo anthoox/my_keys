@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const editName = document.getElementById('editServiceName');
   const editUser = document.getElementById('editServiceUser');
   const editPassword = document.getElementById('editServicePassword');
-  
+
   editButtons.forEach(button => {
 
     button.addEventListener('click', () => {
@@ -17,4 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
       editPassword.value = '';
     });
   });
+
+  // script para llevar id al formulario del modal para eliminar servicio
+  const delModal = document.getElementById('delServiceModal');
+  delModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget; // el botón que disparó el modal
+    const serviceId = button.getAttribute('data-id');
+
+    document.getElementById('deleteServiceId').value = serviceId;
+  });
 });
+

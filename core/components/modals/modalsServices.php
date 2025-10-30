@@ -78,7 +78,7 @@
 
 <div class="modal fade " id="delServiceModal" tabindex="-1" aria-labelledby="delServiceModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <form id="delServiceForm" method="POST" action="/services/delete">
+    <form id="delServiceForm" method="POST" action="http://localhost/keys/public/?c=services&a=delService">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="delServiceModalLabel">Eliminar</h5>
@@ -86,6 +86,7 @@
         </div>
         <div class="modal-body">
           <p>¿Desea eliminar esta contaseña?</p>
+          <input type="hidden" name="service_id" id="deleteServiceId" value="">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

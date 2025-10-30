@@ -17,11 +17,11 @@ class ServicesController
 
     // Cargar el modelo
     require_once __DIR__ . '/../models/ServicesModel.php';
-    $serviceModel = new ServicesModel();
+    $service_model = new ServicesModel();
 
     // Obtener servicios del usuario actual
-    $userId = $_SESSION['user']['user_id'];
-    $services = $serviceModel->getServicesByUser($userId);
+    $user_id = $_SESSION['user']['user_id'];
+    $services = $service_model->getServicesByUser($user_id);
 
     if (!empty($services)) {
       // mostrar servicios
@@ -63,28 +63,28 @@ class ServicesController
     require_once __DIR__ . '/../models/credentialsModel.php';
     require_once __DIR__ . '/../entities/Credential.php';
 
-    $serviceModel = new ServicesModel();
-    $credModel = new CredentialsModel();
+    $service_model = new ServicesModel();
+    $cred_model = new CredentialsModel();
 
     // Crear servicio
-    $userId = $_SESSION['user']['user_id'];
-    $userName = $data['user_name'];
+    $user_id = $_SESSION['user']['user_id'];
+    $user_name = $data['user_name'];
 
-    $serviceId = $serviceModel->createService(
-      $userId,
+    $service_id = $service_model->createService(
+      $user_id,
       $data['service_name'],
       $data['category'],
       $data['notes']
     );
 
-    if ($serviceId) {
+    if ($service_id) {
       // Crear credencial como objeto
-      $credential = new Credential($serviceId, $userName);
+      $credential = new Credential($service_id, $user_name);
       $credential->setPassword($data['password']);
 
-      $credResult = $credModel->createCredential($credential);
+      $cred_result = $cred_model->createCredential($credential);
 
-      if ($credResult) {
+      if ($cred_result) {
         $_SESSION['success'] = "Servicio añadido correctamente.";
       } else {
         $_SESSION['errors'] = "No se pudieron guardar las credenciales.";
@@ -94,6 +94,43 @@ class ServicesController
     }
 
     // Redirigir
+    header("Location: /keys/public/?c=services&a=alls");
+    exit();
+  }
+
+  public function delService(){
+
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
+
+    // Verificar sesión activa
+    if (!isset($_SESSION['user']['user_id'])) {
+      header("Location: /keys/public/?c=auth&a=login");
+      exit();
+    }
+
+    // Verificar que llegue el ID
+    if (!isset($_POST['service_id']) || empty($_POST['service_id'])) {
+      $_SESSION['errors'] = "ID de servicio no válido.";
+      header("Location: /keys/public/?c=services&a=alls");
+    }
+
+    $service_id= intval($_POST['service_id']);
+
+    // Cargar modelo
+    require_once __DIR__ . '/../models/ServicesModel.php';
+    $serviceModel = new ServicesModel();
+
+    // Eliminar el servicio
+    $deleted = $serviceModel->delService($service_id);
+
+    if ($deleted) {
+      $_SESSION['success'] = "Servicio eliminado correctamente.";
+    } else {
+      $_SESSION['errors'] = "No se pudo eliminar el servicio.";
+    }
+
     header("Location: /keys/public/?c=services&a=alls");
     exit();
   }

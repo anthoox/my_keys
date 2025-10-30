@@ -13,30 +13,30 @@ function renderServices(array $services)
 
   foreach ($services as $service) {
 
-    $serviceID = htmlspecialchars($service->getId());
-    $serviceName = htmlspecialchars($service->getName());
-    $userName = htmlspecialchars($service->getUsername() ?? 'No especificado');
-    $updatedAtRaw = $service->getUpdatedAt();
-    $updatedAt = $updatedAtRaw ? date('Y-m-d', strtotime($updatedAtRaw)) : 'Sin fecha';
+    $service_id = htmlspecialchars($service->getId());
+    $service_name = htmlspecialchars($service->getName());
+    $user_name = htmlspecialchars($service->getUsername() ?? 'No especificado');
+    $updated_at_raw = $service->getUpdatedAt();
+    $updated_at = $updated_at_raw ? date('Y-m-d', strtotime($updated_at_raw)) : 'Sin fecha';
 
     echo "
     <div class='col-md-4'>
       <div class='card shadow-sm border-0'>
         <div class='card-header bg-primary text-white d-flex align-items-center justify-content-between'>
-          <h5 class='card-title mb-0'>{$serviceName}</h5>
+          <h5 class='card-title mb-0'>{$service_name}</h5>
           <div>
             <div class='btn btn-sm btn-show p-1 edit-service-btn' data-bs-toggle='modal' 
   data-bs-target='#editServiceModal'
-  data-id='{$serviceID}'
-  data-name='{$serviceName}'
-  data-user='{$userName}'
+  data-id='{$service_id}'
+  data-name='{$service_name}'
+  data-user='{$user_name}'
 
   data-password='********'>
               <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 1792 1408'>
               <path fill='#fbfbfb' d='m888 1056l116-116l-152-152l-116 116v56h96v96zm440-720q-16-16-33 1L945 687q-17 17-1 33t33-1l350-350q17-17 1-33m80 594v190q0 119-84.5 203.5T1120 1408H288q-119 0-203.5-84.5T0 1120V288Q0 169 84.5 84.5T288 0h832q63 0 117 25q15 7 18 23q3 17-9 29l-49 49q-14 14-32 8q-23-6-45-6H288q-66 0-113 47t-47 113v832q0 66 47 113t113 47h832q66 0 113-47t47-113V994q0-13 9-22l64-64q15-15 35-7t20 29m-96-738l288 288l-672 672H640V864zm444 132l-92 92l-288-288l92-92q28-28 68-28t68 28l152 152q28 28 28 68t-28 68' />
               </svg>
             </div>
-            <div class='btn btn-sm btn-show p-1 del-service-btn' data-bs-toggle='modal'  data-bs-target='#delServiceModal'>
+            <div class='btn btn-sm btn-show p-1 del-service-btn' data-bs-toggle='modal'  data-bs-target='#delServiceModal' data-id='{$service_id}'>
               <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'>
               <path fill='#fbfbfb' d='M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zM9 17h2V8H9zm4 0h2V8h-2zM7 6v13z' />
               </svg>
@@ -48,7 +48,7 @@ function renderServices(array $services)
         <div class='card-body'>
           <div class='mb-3 d-flex align-items-center w-100 justify-content-between'>
             <div class='w-70'>
-              <p class='mb-2'><strong>Usuario:</strong> {$userName}</p>
+              <p class='mb-2'><strong>Usuario:</strong> {$user_name}</p>
             </div>
             <div>
                      <button class='btn btn-sm btn-copy p-1'><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'>
@@ -84,7 +84,7 @@ function renderServices(array $services)
             </div>
           </div>
 
-          <small class='text-muted'>Última actualización: {$updatedAt}</small>
+          <small class='text-muted'>Última actualización: {$updated_at}</small>
         </div>
 
         

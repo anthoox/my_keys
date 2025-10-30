@@ -80,4 +80,23 @@ class ServicesModel
       return [];
     }
   }
+
+  public function delService(int $serviceId): bool
+  {
+    try {
+      // Primero eliminamos las credenciales asociadas
+      $stmtCred = $this->db->prepare("DELETE FROM credentials WHERE service_id = :service_id");
+      $stmtCred->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
+      $stmtCred->execute();
+      var_dump($stmtCred);
+
+      // Luego eliminamos el servicio
+      $stmtServ = $this->db->prepare("DELETE FROM services WHERE id = :id");
+      $stmtServ->bindParam(':id', $serviceId, PDO::PARAM_INT);
+      return $stmtServ->execute();
+    } catch (PDOException $e) {
+      error_log("Error al eliminar servicio: " . $e->getMessage());
+      return false;
+    }
+  }
 }
