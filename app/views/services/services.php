@@ -14,9 +14,5 @@
 
 <?php
 require_once __DIR__ . '/../../../core/components/modals/modalsServices.php';
-/**
- * TODO Añadir funcionalidad
- */
+require_once __DIR__  . '/../../../core/components/footer.php'
 ?>
-
-<?php require_once __DIR__  . '/../../../core/components/footer.php' ?>

@@ -74,7 +74,7 @@ class AuthController
     // Validar y procesar el formulario de registro
     $data = validateRegistrationForm();
 
-    $registerResult = false;
+    $register_result = false;
     if (isset($data) && !empty($data)) {
       $authModel = new AuthModel();
 
@@ -84,13 +84,15 @@ class AuthController
          * TODOS Mostrar errores si el email ya existe
          */
         $result = $authModel->emailExists($data['email']);
-
+        /**
+         * ! corregir desde aqui para los mensajes de error tras intento de registro fallido
+         */
         if ($result) {
           // Guardar el error en variable
           $_SESSION['errors'] = "El correo ya está registrado.";
         } else {
           // Registrar al usuario
-          $registerResult = $authModel->createUser(
+          $register_result = $authModel->createUser(
             $data['username'],
             $data['email'],
             password_hash($data['password'], PASSWORD_BCRYPT)
@@ -99,7 +101,7 @@ class AuthController
       }
     }
     require_once __DIR__ . '/../views/auth/register.php';
-    if ($registerResult) {
+    if ($register_result) {
       /** 
        *  TODO añadir metodo showError para mostrar errores o exito
        * */ 

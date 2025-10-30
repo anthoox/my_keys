@@ -13,13 +13,13 @@ class ServicesModel
   /**
    * Crea un nuevo servicio en la base de datos
    * 
-   * @param int $userId ID del usuario propietario
-   * @param string $serviceName Nombre del servicio
+   * @param int $user_id ID del usuario propietario
+   * @param string $service_name Nombre del servicio
    * @param string|null $category Categoría (puede ser nula)
    * @param string|null $notes Notas adicionales (puede ser nula)
    * @return int|false Devuelve el ID del servicio creado o false si falla
    */
-  public function createService($userId, $serviceName, $category = null, $notes = null)
+  public function createService($user_id, $service_name, $category = null, $notes = null)
   {
 
     try {
@@ -27,8 +27,8 @@ class ServicesModel
                 VALUES (:user_id, :name, :category_id, :notes)";
 
       $stmt = $this->db->prepare($sql);
-      $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-      $stmt->bindParam(':name', $serviceName, PDO::PARAM_STR);
+      $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+      $stmt->bindParam(':name', $service_name, PDO::PARAM_STR);
       $stmt->bindParam(':category_id', $category, PDO::PARAM_INT);
       $stmt->bindParam(':notes', $notes, PDO::PARAM_STR);
 
@@ -46,7 +46,7 @@ class ServicesModel
   /**
    * Obtiene todos los servicios del usuario
    */
-  public function getServicesByUser($userId)
+  public function getServicesByUser($user_id)
   {
     try {
       $stmt = $this->db->prepare("
@@ -56,7 +56,7 @@ class ServicesModel
             WHERE s.user_id = :user_id
             ORDER BY s.created_at DESC
         ");
-      $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+      $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
       $stmt->execute();
 
       $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
