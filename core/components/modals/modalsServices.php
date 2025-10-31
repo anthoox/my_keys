@@ -45,14 +45,14 @@
 
 <div class="modal fade " id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <form id="editServiceForm" method="POST" action="/services/update">
+    <form id="editServiceForm" method="POST" action="http://localhost/keys/public/?c=services&a=editService">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="editServiceModalLabel">Editar</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-          <input type="hidden" name="id" id="editServiceId">
+          <input type="hidden" name="service_id" id="editServiceId">
           <div class="mb-3">
             <label for="editServiceName" class="form-label">Nombre del servicio</label>
             <input type="text" class="form-control" id="editServiceName" name="name" required>

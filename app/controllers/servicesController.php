@@ -134,4 +134,41 @@ class ServicesController
     header("Location: /keys/public/?c=services&a=alls");
     exit();
   }
+
+  public function editService(){
+
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
+
+    // Verificar sesión activa
+    if (!isset($_SESSION['user']['user_id'])) {
+      header("Location: /keys/public/?c=auth&a=login");
+      exit();
+    }
+
+    // Verificar que llegue el ID
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $id = $_POST['service_id'] ?? null;
+      $name = $_POST['name'] ?? null;
+      $user = $_POST['user'] ?? null;
+      $password = $_POST['password'] ?? null;
+
+      if ($id && $name && $user && $password) {
+        $model = new ServicesModel();
+        $updated = $model->editService($id, $name, $user, $password);
+
+        if ($updated) {
+          header("Location: /keys/public/?c=services&a=alls");
+          exit;
+        } else {
+          header("Location: /keys/public/?c=services&a=alls");
+          exit;
+        }
+      } else {
+        header("Location: /keys/public/?c=services&a=alls");
+        exit;
+      }
+    }
+  }
 }

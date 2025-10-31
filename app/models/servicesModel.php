@@ -1,5 +1,8 @@
 <?php
 require_once __DIR__ . '/../entities/Service.php';
+/**
+ * TODO mostrar los errores en pantalla si es necesario
+ */
 class ServicesModel
 {
   private $db;
@@ -81,21 +84,71 @@ class ServicesModel
     }
   }
 
-  public function delService(int $serviceId): bool
+  public function delService(int $service_id): bool
   {
     try {
       // Primero eliminamos las credenciales asociadas
-      $stmtCred = $this->db->prepare("DELETE FROM credentials WHERE service_id = :service_id");
-      $stmtCred->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
-      $stmtCred->execute();
-      var_dump($stmtCred);
+      $stmt_cred = $this->db->prepare("DELETE FROM credentials WHERE service_id = :service_id");
+      $stmt_cred->bindParam(':service_id', $service_id, PDO::PARAM_INT);
+      $stmt_cred->execute();
+      var_dump($stmt_cred);
 
       // Luego eliminamos el servicio
       $stmtServ = $this->db->prepare("DELETE FROM services WHERE id = :id");
-      $stmtServ->bindParam(':id', $serviceId, PDO::PARAM_INT);
+      $stmtServ->bindParam(':id', $service_id, PDO::PARAM_INT);
       return $stmtServ->execute();
     } catch (PDOException $e) {
       error_log("Error al eliminar servicio: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function editService($id, $name, $user, $password)
+  {
+    try {
+      $this->db->beginTransaction();
+
+      // 1. Actualizar el nombre del servicio
+      $sql_service = "UPDATE services 
+                       SET name = :name 
+                       WHERE id = :id";
+      $stmt_service = $this->db->prepare($sql_service);
+      $stmt_service->bindParam(':id', $id, PDO::PARAM_INT);
+      $stmt_service->bindParam(':name', $name, PDO::PARAM_STR);
+      $stmt_service->execute();
+/**
+ * TODO SOLO GUARDA EL NOMBRE. MODIFICAR
+ */
+      // 2. Preparar actualización de credenciales
+      $params = [
+        ':id' => $id,
+        ':user' => $user,
+        ':updated_at' => date('Y-m-d H:i:s')
+      ];
+
+      // Si la contraseña se envía, la hasheamos
+      if (!empty($password)) {
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        $sql_credentials = "UPDATE credentials 
+                               SET username = :user, password = :password, updated_at = :updated_at 
+                               WHERE service_id = :id";
+        $params[':password'] = $password_hash;
+      } else {
+        // Si no se envía contraseña, no la modificamos
+        $sql_credentials = "UPDATE credentials 
+                               SET username = :user, updated_at = :updated_at 
+                               WHERE service_id = :id";
+      }
+
+      // Ejecutar actualización de credenciales
+      $stmt_cred = $this->db->prepare($sql_credentials);
+      $stmt_cred->execute($params);
+
+      $this->db->commit();
+      return true;
+    } catch (PDOException $e) {
+      $this->db->rollBack();
+      error_log("Error al actualizar el servicio: " . $e->getMessage());
       return false;
     }
   }

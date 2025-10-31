@@ -26,5 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('deleteServiceId').value = serviceId;
   });
+
+  // script para llevar id al formulario del modal para editar servicio
+  const editModal = document.getElementById('editServiceModal');
+  editModal.addEventListener('show.bs.modal', event => {
+
+    const button = event.relatedTarget; // el botón que disparó el modal
+    const serviceId = button.getAttribute('data-id');
+
+    document.getElementById('editServiceId').value = serviceId;
+  });
 });
 
