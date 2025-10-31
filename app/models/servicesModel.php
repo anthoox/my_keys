@@ -103,52 +103,73 @@ class ServicesModel
     }
   }
 
-  public function editService($id, $name, $user, $password)
+  public function editService(int $service_id, string $service_name, string $username, ?string $password = null): bool
   {
     try {
+      // Iniciamos la transacción
       $this->db->beginTransaction();
 
-      // 1. Actualizar el nombre del servicio
-      $sql_service = "UPDATE services 
-                       SET name = :name 
-                       WHERE id = :id";
+      // 1) Actualizar el nombre del servicio en la tabla services
+      $sql_service = "UPDATE services SET name = :name WHERE id = :id";
       $stmt_service = $this->db->prepare($sql_service);
-      $stmt_service->bindParam(':id', $id, PDO::PARAM_INT);
-      $stmt_service->bindParam(':name', $name, PDO::PARAM_STR);
-      $stmt_service->execute();
-/**
- * TODO SOLO GUARDA EL NOMBRE. MODIFICAR
- */
-      // 2. Preparar actualización de credenciales
-      $params = [
-        ':id' => $id,
-        ':user' => $user,
-        ':updated_at' => date('Y-m-d H:i:s')
-      ];
+      $stmt_service->execute([
+        'name' => $service_name,
+        'id'   => $service_id
+      ]);
 
-      // Si la contraseña se envía, la hasheamos
+      // 2) Actualizar credenciales asociadas (username, password_encrypted, updated_at)
+      $now = date('Y-m-d H:i:s');
+
       if (!empty($password)) {
+        // Si se envía nueva contraseña, hashearla
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $sql_credentials = "UPDATE credentials 
-                               SET username = :user, password = :password, updated_at = :updated_at 
-                               WHERE service_id = :id";
-        $params[':password'] = $password_hash;
+
+        $sqlCred = "UPDATE credentials
+                        SET username = :username,
+                            password_encrypted = :password_encrypted,
+                            updated_at = :updated_at
+                        WHERE service_id = :service_id";
+        $stmtCred = $this->db->prepare($sqlCred);
+        $stmtCred->execute([
+          'username'           => $username,
+          'password_encrypted' => $password_hash,
+          'updated_at'         => $now,
+          'service_id'         => $service_id
+        ]);
       } else {
-        // Si no se envía contraseña, no la modificamos
-        $sql_credentials = "UPDATE credentials 
-                               SET username = :user, updated_at = :updated_at 
-                               WHERE service_id = :id";
+        // Solo actualizar username y fecha si no hay nueva password
+        $sqlCred = "UPDATE credentials
+                        SET username = :username,
+                            updated_at = :updated_at
+                        WHERE service_id = :service_id";
+        $stmtCred = $this->db->prepare($sqlCred);
+        $stmtCred->execute([
+          'username'   => $username,
+          'updated_at' => $now,
+          'service_id' => $service_id
+        ]);
       }
 
-      // Ejecutar actualización de credenciales
-      $stmt_cred = $this->db->prepare($sql_credentials);
-      $stmt_cred->execute($params);
+      // 3) Si no existía fila de credentials (affectedRows == 0), insertar una nueva fila
+      //    Esto cubre el caso en que antes no había credenciales asociadas.
+      if ($stmtCred->rowCount() === 0) {
+        // Insertar nueva credencial (si no existe)
+        $insertSql = "INSERT INTO credentials (service_id, username, password_encrypted, updated_at)
+                          VALUES (:service_id, :username, :password_encrypted, :updated_at)";
+        $stmtIns = $this->db->prepare($insertSql);
+        $stmtIns->execute([
+          'service_id'         => $service_id,
+          'username'           => $username,
+          'password_encrypted' => !empty($password) ? $password_hash : null,
+          'updated_at'         => $now
+        ]);
+      }
 
       $this->db->commit();
       return true;
     } catch (PDOException $e) {
       $this->db->rollBack();
-      error_log("Error al actualizar el servicio: " . $e->getMessage());
+      error_log("Error en editService: " . $e->getMessage());
       return false;
     }
   }
