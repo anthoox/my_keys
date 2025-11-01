@@ -63,7 +63,7 @@
           </div>
           <div class="mb-3">
             <label for="editServicePassword" class="form-label">Contraseña</label>
-            <input type="password" class="form-control" id="editServicePassword" name="password" required>
+            <input type="password" class="form-control" id="editServicePassword" name="password">
           </div>
         </div>
         <div class="modal-footer">

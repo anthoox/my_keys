@@ -154,7 +154,7 @@ class ServicesController
       $user = $_POST['user'] ?? null;
       $password = $_POST['password'] ?? null;
 
-      if ($id && $name && $user && $password) {
+      if ($id && $name && $user) {
 
         $model = new ServicesModel();
         $updated = $model->editService($id, $name, $user, $password);
