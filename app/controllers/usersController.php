@@ -3,13 +3,7 @@
 class UsersController {
 
 
-  public function account()
-  {
-
-    require_once __DIR__ . '/../views/users/account.php';
-  }
-
-  public function getUserData(){
+  public function account(){
 
     if (session_status() === PHP_SESSION_NONE) {
       session_start();
@@ -28,12 +22,15 @@ class UsersController {
     $user_data = $service_model->getUserData($user_id);
 
     if(!empty($user_data)){
-      echo "cosas";
-      die();
+      // mostrar datos de usuario
+      require_once __DIR__ . '/../../core/helpers/renderDataUser.php';
+      renderDataUser($user_data);
+      // die();
     }else{
-      echo 'vacio';
-      die();
+      $_SESSION['errors'] = "Error al cargar los servicios.";
     }
+    require_once __DIR__ . '/../views/users/account.php';
+    die();
   }
 
   public function editUserData() {

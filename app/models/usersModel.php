@@ -13,7 +13,7 @@ class usersModel{
     $this->db = DataBase::getInstance()->getConnection();
   }
 
-  public function getUserData($user_id){
+  public function getUserData($user_id): mixed{
 
     try {
       $stmt = $this->db->prepare(
@@ -22,9 +22,24 @@ class usersModel{
       );
       $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
       $stmt->execute();
-      $user_data = [];
-      $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
-      
+
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if ($row) {
+        $user_data = new User(
+          $row['id'],
+          $row['username'],
+          $row['email'],
+          $row['password_hash'],
+          $row['created_at']
+        );
+      } else {
+        $user_data = null; // No se encontró usuario
+      }
+
+      // var_dump($user_data); // Para debug
+      // die();
+
       return $user_data;
     } catch (PDOException $e) {
       error_log("Error al obtener servicios: " . $e->getMessage());
