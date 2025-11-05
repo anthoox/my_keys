@@ -13,6 +13,26 @@ class usersModel{
     $this->db = DataBase::getInstance()->getConnection();
   }
 
+  public function getUserData($user_id){
+
+    try {
+      $stmt = $this->db->prepare(
+        "
+      SELECT * from users WHERE id = :user_id LIMIT 1"
+      );
+      $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+      $stmt->execute();
+      $user_data = [];
+      $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+      
+      return $user_data;
+    } catch (PDOException $e) {
+      error_log("Error al obtener servicios: " . $e->getMessage());
+
+      return [];
+    }
+  }
+
   public function editUserData(int $user_id, ?string $user_name = null, ?string $email = null){
     try {
       // Iniciamos la transacción

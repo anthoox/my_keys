@@ -1,6 +1,7 @@
 <div class="container  col-sm-12 col-md-6">
   <h1 class="mt-5">Mi cuenta</h1>
-  <form method="post" class="row g-3 mt-3" action="http://localhost/keys/public/?c=users&a=editUserData">
+  <!-- cambiar metodo al que se envia -->
+  <form method="post" class="row g-3 mt-3" action="http://localhost/keys/public/?c=users&a=getUserData">
     <div class=" mb-3">
       <label for="formGroupExampleInput" class="form-label">Usuario</label>
       <input type="text" class="form-control" id="formGroupExampleInput" placeholder="nombre" name="username">

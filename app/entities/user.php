@@ -8,7 +8,12 @@ class User
   private $password_hash;
   private $created_at;
 
-  public function __construct($id = null, $username = null, $email = null, $password_hash = null, $created_at = null)
+  public function __construct(
+    int $id, 
+    string $username, 
+    string $email, 
+    ?string $password_hash = null, 
+    ?string $created_at = null)
   {
     $this->id = $id;
     $this->username = $username;
