@@ -1,4 +1,7 @@
 
+/**
+ * TODO corregir para que no se muestren los errores en consola
+ */
 document.addEventListener('DOMContentLoaded', () => {
   const editButtons = document.querySelectorAll('.edit-service-btn');
   const editId = document.getElementById('editServiceId');
@@ -36,5 +39,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('editServiceId').value = serviceId;
   });
+
 });
+
+// Script Bootstrap para abrir el segundo modal
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Botón dentro del primer modal
+  const btnOpen = document.getElementById("openChangePasswordModal");
+
+  // Los dos modales
+  const modalWarningEl = document.getElementById("warningModal");
+  const modalChangeEl = document.getElementById("changePasswordModal");
+
+  if (btnOpen && modalWarningEl && modalChangeEl) {
+    const modalWarning = bootstrap.Modal.getOrCreateInstance(modalWarningEl);
+    const modalChange = bootstrap.Modal.getOrCreateInstance(modalChangeEl);
+
+    btnOpen.addEventListener("click", () => {
+      // Cerrar el primer modal
+      modalWarning.hide();
+
+      // Esperar a que se cierre y luego abrir el segundo
+      modalWarningEl.addEventListener(
+        "hidden.bs.modal",
+        function handler() {
+          modalChange.show();
+          modalWarningEl.removeEventListener("hidden.bs.modal", handler);
+        }
+      );
+    });
+  }
+});
+
 

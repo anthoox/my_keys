@@ -19,7 +19,7 @@
       <button type="submit" class="btn btn-primary col-12">Guardar</button>
     </div>
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary col-6 mt-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <button type="button" class="btn btn-primary col-6 mt-5" data-bs-toggle="modal" data-bs-target="#warningModal">
       Cambiar contraseña
     </button>
     <div class="col-12 mt-2">
@@ -28,31 +28,83 @@
   </form>
 
 
-
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <form class="modal-dialog">
+  <!-- Modal 1: Advertencia -->
+  <div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Contraseña Maestra</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h1 class="modal-title fs-5" id="warningModalLabel">Contraseña Maestra</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-          !Atencion! Va a cambiar la contraseña maestra de la aplicación. Por su seguridad, enviaremos un email a su correo electronico para que valide el cambio de contraseña.
+          <strong>¡Atención!</strong> Vas a cambiar la contraseña maestra de la aplicación.<br>
+          Por seguridad, recibirás un correo electrónico para confirmar el cambio.
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Enviar email</button>
+          <button type="button" class="btn btn-primary" id="openChangePasswordModal">
+            Cambiar contraseña
+          </button>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 
-  <?php
-  /**
-   * TODO Añadir funcionalidad
-   */
-  ?>
+  <!-- Modal 2: Cambio de contraseña -->
+  <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form method="POST" action="http://localhost/keys/public/?c=auth&a=changeMasterPassword">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="changePasswordModalLabel">Cambiar Contraseña Maestra</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="oldPassword" class="form-label">Contraseña actual</label>
+              <input type="password" class="form-control" id="oldPassword" name="old_password" required>
+            </div>
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">Nueva contraseña</label>
+              <input type="password" class="form-control" id="newPassword" name="new_password" required>
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirmar nueva contraseña</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success">Guardar cambios</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Script que hace que se cierre el primer modal y se abra el segundo -->
+  <script>
+    // document.addEventListener("DOMContentLoaded", function() {
+    //   const btnOpen = document.getElementById("openChangePasswordModal");
+    //   const modalWarningEl = document.getElementById("warningModal");
+    //   const modalChangeEl = document.getElementById("changePasswordModal");
+
+    //   const modalWarning = bootstrap.Modal.getOrCreateInstance(modalWarningEl);
+    //   const modalChange = bootstrap.Modal.getOrCreateInstance(modalChangeEl);
+
+    //   btnOpen.addEventListener("click", function() {
+    //     // Cerrar el modal 1
+    //     modalWarning.hide();
+
+    //     // Esperar a que se cierre y abrir el modal 2
+    //     modalWarningEl.addEventListener("hidden.bs.modal", function handler() {
+    //       modalChange.show();
+    //       modalWarningEl.removeEventListener("hidden.bs.modal", handler);
+    //     });
+    //   });
+    // });
+  </script>
+
 </div>
 
 <?= require_once __DIR__  . '/../../../core/components/footer.php' ?>
