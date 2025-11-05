@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // Botón dentro del primer modal
+  const btnOpen = document.getElementById("openChangePasswordModal");
+
   // Los dos modales
   const modalWarningEl = document.getElementById("warningModal");
   const modalChangeEl = document.getElementById("changePasswordModal");
