@@ -1,14 +1,16 @@
 <div class="container  col-sm-12 col-md-6">
   <h1 class="mt-5">Mi cuenta</h1>
-  <form class="row g-3 mt-3">
-    <div class="mb-3">
+  <form method="post" class="row g-3 mt-3" action="http://localhost/keys/public/?c=users&a=editUserData">
+    <div class=" mb-3">
       <label for="formGroupExampleInput" class="form-label">Usuario</label>
-      <input type="text" class="form-control" id="formGroupExampleInput" placeholder="nombre">
+      <input type="text" class="form-control" id="formGroupExampleInput" placeholder="nombre" name="username">
     </div>
     <div class="mb-3">
       <label for="formGroupExampleInput2" class="form-label">Email</label>
-      <input type="email" class="form-control" id="formGroupExampleInput2" placeholder="correo@correo.com">
+      <input type="email" class="form-control" id="formGroupExampleInput2" placeholder="correo@correo.com" name="email">
     </div>
+    <input type="hidden" name="userId" id="editUserId">
+
 
     <div class="col-12">
       <label for="inputAddress" class="form-label">Registrado</label>
@@ -23,7 +25,7 @@
       Cambiar contraseña
     </button>
     <div class="col-12 mt-2">
-      <button type="submit" class="btn btn-danger col-12">Eliminar cuenta</button>
+      <button type="button" class="btn btn-danger col-12">Eliminar cuenta</button>
     </div>
   </form>
 
@@ -82,28 +84,6 @@
     </div>
   </div>
 
-  <!-- Script que hace que se cierre el primer modal y se abra el segundo -->
-  <script>
-    // document.addEventListener("DOMContentLoaded", function() {
-    //   const btnOpen = document.getElementById("openChangePasswordModal");
-    //   const modalWarningEl = document.getElementById("warningModal");
-    //   const modalChangeEl = document.getElementById("changePasswordModal");
-
-    //   const modalWarning = bootstrap.Modal.getOrCreateInstance(modalWarningEl);
-    //   const modalChange = bootstrap.Modal.getOrCreateInstance(modalChangeEl);
-
-    //   btnOpen.addEventListener("click", function() {
-    //     // Cerrar el modal 1
-    //     modalWarning.hide();
-
-    //     // Esperar a que se cierre y abrir el modal 2
-    //     modalWarningEl.addEventListener("hidden.bs.modal", function handler() {
-    //       modalChange.show();
-    //       modalWarningEl.removeEventListener("hidden.bs.modal", handler);
-    //     });
-    //   });
-    // });
-  </script>
 
 </div>
 
