@@ -1,3 +1,16 @@
+  <?php
+
+  if (!empty($_SESSION['success_message'])) {
+    echo "<div class='alert alert-success'>{$_SESSION['success_message']}</div>";
+    unset($_SESSION['success_message']);
+  }
+
+  if (!empty($_SESSION['error_message'])) {
+    echo "<div class='alert alert-danger'>{$_SESSION['error_message']}</div>";
+    unset($_SESSION['error_message']);
+  }
+  ?>
+
   <!-- Modal 1: Advertencia -->
   <div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -7,8 +20,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-          <strong>¡Atención!</strong> Vas a cambiar la contraseña maestra de la aplicación.<br>
-          Por seguridad, recibirás un correo electrónico para confirmar el cambio.
+          <strong>¡Atención!</strong> Va a cambiar la contraseña de acceso a la aplicación.<br>
+          ¿Está seguro de realizar cambios?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -23,7 +36,7 @@
   <!-- Modal 2: Cambio de contraseña -->
   <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <form method="POST" action="http://localhost/keys/public/?c=auth&a=changeMasterPassword">
+      <form method="POST" action="http://localhost/keys/public/?c=auth&a=changeAccesPassword">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="changePasswordModalLabel">Cambiar Contraseña Maestra</h5>
@@ -53,6 +66,6 @@
   </div>
 
 
-</div>
+  </div>
 
-<?php require_once __DIR__  . '/../../../core/components/footer.php' ?>
+  <?php require_once __DIR__  . '/../../../core/components/footer.php' ?>

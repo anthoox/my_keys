@@ -49,19 +49,26 @@ class UsersController {
  */
     // Verificar que llegue el ID
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      session_start();
+
       $id = $_POST['userId'] ?? null;
       $user_name = $_POST['username'] ?? '';
       $email = $_POST['email'] ?? '';
-      
+
       if ($id) {
         $model = new UsersModel();
-
-        // Llama al modelo aunque los campos estén vacíos
         $updated = $model->editUserData($id, $user_name, $email);
+
+        if ($updated) {
+          $_SESSION['success_message'] = "Datos actualizados correctamente.";
+        } else {
+          $_SESSION['error_message'] = "No se realizaron cambios o ocurrió un error al actualizar.";
+        }
 
         header("Location: /keys/public/?c=users&a=account");
         exit;
       } else {
+        $_SESSION['error_message'] = "Error: falta el ID del usuario.";
         header("Location: /keys/public/?c=users&a=account");
         exit;
       }
