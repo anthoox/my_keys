@@ -50,22 +50,17 @@ class UsersController {
     // Verificar que llegue el ID
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $id = $_POST['userId'] ?? null;
-      $user_name = $_POST['username'] ?? null;
-      $email = $_POST['email'] ?? null;
-
-      if ($id && $user_name || $email) {
-
+      $user_name = $_POST['username'] ?? '';
+      $email = $_POST['email'] ?? '';
+      
+      if ($id) {
         $model = new UsersModel();
 
+        // Llama al modelo aunque los campos estén vacíos
         $updated = $model->editUserData($id, $user_name, $email);
 
-        if ($updated) {
-          header("Location: /keys/public/?c=users&a=account");
-          exit;
-        } else {
-          header("Location: /keys/public/?c=users&a=account");
-          exit;
-        }
+        header("Location: /keys/public/?c=users&a=account");
+        exit;
       } else {
         header("Location: /keys/public/?c=users&a=account");
         exit;

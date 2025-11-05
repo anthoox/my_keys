@@ -48,33 +48,41 @@ class usersModel{
     }
   }
 
-  public function editUserData(int $user_id, ?string $user_name = null, ?string $email = null){
+  public function editUserData(int $user_id, ?string $user_name = null, ?string $email = null): bool
+  {
     try {
-      // Iniciamos la transacción
       $this->db->beginTransaction();
 
-      if(empty($email)){
-        // Cambio de nombre
-        $sql_service = "UPDATE users SET username = :username WHERE id = :id";
-        $stmt_service = $this->db->prepare($sql_service);
-        $stmt_service->execute([
-          'username' => $user_name,
-          'id'   => $user_id
-        ]);
+      // Armamos dinámicamente la consulta dependiendo de qué valores vengan
+      $fields = [];
+      $params = ['id' => $user_id];
+
+      if (!empty($user_name)) {
+        $fields[] = "username = :username";
+        $params['username'] = $user_name;
       }
 
-      if (empty($user_name)) {
-        // Cambio de nombre
-        $sql_service = "UPDATE users SET email = :email WHERE id = :id";
-        $stmt_service = $this->db->prepare($sql_service);
-        $stmt_service->execute([
-          'email' => $email
-        ]);
+      if (!empty($email)) {
+        $fields[] = "email = :email";
+        $params['email'] = $email;
       }
 
-     } catch (PDOException $e) {
+      // Si no hay campos para actualizar, salimos
+      if (empty($fields)) {
+        $this->db->rollBack();
+        return false;
+      }
+
+      $sql = "UPDATE users SET " . implode(", ", $fields) . " WHERE id = :id";
+      $stmt = $this->db->prepare($sql);
+      $result = $stmt->execute($params);
+
+      $this->db->commit();
+
+      return $result;
+    } catch (PDOException $e) {
       $this->db->rollBack();
-      error_log("Error en editService: " . $e->getMessage());
+      error_log("Error en editUserData: " . $e->getMessage());
       return false;
     }
   }

@@ -23,14 +23,14 @@ function renderDataUser(object $user_data){
     <div class='container  col-sm-12 col-md-6'>
       <h1 class='mt-5'>Mi cuenta</h1>
       <!-- cambiar metodo al que se envia -->
-      <form method='post' class='row g-3 mt-3' action='http://localhost/keys/public/?c=users&a=account'>
+      <form method='post' class='row g-3 mt-3' action='http://localhost/keys/public/?c=users&a=editUserData'>
         <div class=' mb-3'>
           <label for='formGroupExampleInput' class='form-label'>Nombre de usuario</label>
-          <input type='text' class='form-control' id='formGroupExampleInput' placeholder='$user_name' name='username'>
+          <input type='text' class='form-control' id='formGroupExampleInput' value='$user_name' name='username'>
         </div>
         <div class='mb-3'>
           <label for='formGroupExampleInput2' class='form-label'>Email</label>
-          <input type='email' class='form-control' id='formGroupExampleInput2' placeholder='$user_email' name='email'>
+          <input type='email' class='form-control' id='formGroupExampleInput2' value='$user_email' name='email'>
         </div>
         <input type='hidden' name='userId' id='editUserId' value='$user_id'>
         <div class='col-12'>
