@@ -86,4 +86,40 @@ class usersModel{
       return false;
     }
   }
+
+  public function changeUserPassword(int $user_id, string $old_password, string $new_password): bool
+  {
+    try {
+      // 1️⃣ Obtener la contraseña actual del usuario
+      $sql = "SELECT password_hash FROM users WHERE id = :id LIMIT 1";
+      $stmt = $this->db->prepare($sql);
+      $stmt->execute(['id' => $user_id]);
+      $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if (!$user) {
+        return false; // Usuario no encontrado
+      }
+
+      // 2️⃣ Verificar la contraseña actual
+      if (!password_verify($old_password, $user['password_hash'])) {
+        return false; // Contraseña incorrecta
+      }
+
+      // 3️⃣ Generar nuevo hash de la contraseña
+      $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
+
+      // 4️⃣ Actualizar la contraseña
+      $update_sql = "UPDATE users SET password_hash = :new_hash WHERE id = :id";
+      $update_stmt = $this->db->prepare($update_sql);
+      $update_stmt->execute([
+        'new_hash' => $new_hash,
+        'id' => $user_id
+      ]);
+
+      return $update_stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+      error_log("Error al cambiar contraseña: " . $e->getMessage());
+      return false;
+    }
+  }
 }

@@ -74,4 +74,60 @@ class UsersController {
       }
     }
   }
+
+  public function changeMasterPassword()
+  {
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
+
+    // Verificar sesión activa
+    if (!isset($_SESSION['user']['user_id'])) {
+      header("Location: /keys/public/?c=auth&a=login");
+      exit();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+
+      $user_id = $_SESSION['user']['user_id'] ?? null;
+      $old_password = $_POST['old_password'] ?? '';
+      $new_password = $_POST['new_password'] ?? '';
+      $confirm_password = $_POST['confirm_password'] ?? '';
+
+
+      if (!$user_id) {
+        $_SESSION['error_message'] = "No se ha podido identificar al usuario.";
+        header("Location: /keys/public/?c=users&a=account");
+        exit;
+      }
+
+      // Validaciones básicas
+      if (empty($old_password) || empty($new_password) || empty($confirm_password)) {
+        $_SESSION['error_message'] = "Todos los campos son obligatorios.";
+        header("Location: /keys/public/?c=users&a=account");
+        exit;
+      }
+
+      if ($new_password !== $confirm_password) {
+        $_SESSION['error_message'] = "Las contraseñas nuevas no coinciden.";
+        header("Location: /keys/public/?c=users&a=account");
+        exit;
+      }
+
+      // Llamamos al modelo
+      require_once __DIR__ . '/../models/UsersModel.php';
+      $model = new UsersModel();
+      $success = $model->changeUserPassword($user_id, $old_password, $new_password);
+
+      if ($success) {
+        $_SESSION['success_message'] = "Contraseña actualizada correctamente.";
+      } else {
+        $_SESSION['error_message'] = "La contraseña actual es incorrecta o ha ocurrido un error.";
+      }
+
+      header("Location: /keys/public/?c=users&a=account");
+      exit;
+    }
+  }
 }
