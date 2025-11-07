@@ -1,4 +1,5 @@
 <?php
+
 /**
  * * Inicio de sesión tras el login ya que al redirigir con header() pierde la sesión 
  * */

@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../entities/credential.php';
+require_once __DIR__ . '/../../core/database/DataBase.php';
+
 class CredentialsModel
 {
   private $db;

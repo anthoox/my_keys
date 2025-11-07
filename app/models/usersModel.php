@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../entities/User.php';
+require_once __DIR__ . '/../../core/database/DataBase.php';
 /**
  * TODO mostrar los errores en pantalla si es necesario
  */

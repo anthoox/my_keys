@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../core/database/DataBase.php';
 
 class AuthModel
 {
