@@ -10,12 +10,8 @@
     unset($_SESSION['error_message']);
   }
   ?>
-
+  </div>
+  </div>
 
 
   <?php require_once __DIR__  . '/../../../app/views/components/modals/modalsUsers.php' ?>
-
-  </div>
-
-</div>
-  <?php require_once __DIR__  . '/../../../app/views/components/footer.php' ?>

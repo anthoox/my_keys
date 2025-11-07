@@ -14,5 +14,5 @@
 
 <?php
 require_once __DIR__ . '/../../../app/views/components/modals/modalsServices.php';
-require_once __DIR__  . '/../../../app/views/components/footer.php'
+
 ?>
