@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../core/config/config.php';
 
 class ServicesController
 {
@@ -11,7 +12,7 @@ class ServicesController
 
     // Verificar que el usuario esté logueado
     if (!isset($_SESSION['user']['user_id'])) {
-      header("Location: /keys/public/?c=auth&a=login");
+      header("Location: " .  BASE_URL . "/?c=auth&a=login");
       exit();
     }
 
@@ -45,7 +46,7 @@ class ServicesController
 
     // Verificar sesión activa
     if (!isset($_SESSION['user']['user_id'])) {
-      header("Location: /keys/public/?c=auth&a=login");
+      header("Location: " .  BASE_URL . "/?c=auth&a=login");
       exit();
     }
 
@@ -54,7 +55,7 @@ class ServicesController
 
     // Validación
     if (!$data) {
-      header("Location: /keys/public/?c=services&a=alls");
+      header("Location: " .  BASE_URL . "/?c=services&a=alls");
       exit();
     }
 
@@ -94,7 +95,7 @@ class ServicesController
     }
 
     // Redirigir
-    header("Location: /keys/public/?c=services&a=alls");
+    header("Location: " .  BASE_URL . "/?c=services&a=alls");
     exit();
   }
 
@@ -106,14 +107,14 @@ class ServicesController
 
     // Verificar sesión activa
     if (!isset($_SESSION['user']['user_id'])) {
-      header("Location: /keys/public/?c=auth&a=login");
+      header("Location: " .  BASE_URL . "/?c=auth&a=login");
       exit();
     }
 
     // Verificar que llegue el ID
     if (!isset($_POST['service_id']) || empty($_POST['service_id'])) {
       $_SESSION['errors'] = "ID de servicio no válido.";
-      header("Location: /keys/public/?c=services&a=alls");
+      header("Location: " .  BASE_URL . "/?c=services&a=alls");
     }
 
     $service_id= intval($_POST['service_id']);
@@ -131,7 +132,7 @@ class ServicesController
       $_SESSION['errors'] = "No se pudo eliminar el servicio.";
     }
 
-    header("Location: /keys/public/?c=services&a=alls");
+    header("Location: " .  BASE_URL . "/?c=services&a=alls");
     exit();
   }
 
@@ -143,7 +144,7 @@ class ServicesController
 
     // Verificar sesión activa
     if (!isset($_SESSION['user']['user_id'])) {
-      header("Location: /keys/public/?c=auth&a=login");
+      header("Location: " .  BASE_URL . "/?c=auth&a=login");
       exit();
     }
 
@@ -160,14 +161,14 @@ class ServicesController
         $updated = $model->editService($id, $name, $user, $password);
 
         if ($updated) {
-          header("Location: /keys/public/?c=services&a=alls");
+          header("Location: " .  BASE_URL . "/?c=services&a=alls");
           exit;
         } else {
-          header("Location: /keys/public/?c=services&a=alls");
+          header("Location: " .  BASE_URL . "/?c=services&a=alls");
           exit;
         }
       } else {
-        header("Location: /keys/public/?c=services&a=alls");
+        header("Location: " .  BASE_URL . "/?c=services&a=alls");
         exit;
       }
     }

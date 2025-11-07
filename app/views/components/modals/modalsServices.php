@@ -45,7 +45,7 @@
 
 <div class="modal fade " id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <form id="editServiceForm" method="POST" action="http://localhost/keys/public/?c=services&a=editService">
+    <form id="editServiceForm" method="POST" action="<?= FULL_BASE_URL ?>/?c=services&a=editService">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="editServiceModalLabel">Editar</h5>
@@ -78,7 +78,7 @@
 
 <div class="modal fade " id="delServiceModal" tabindex="-1" aria-labelledby="delServiceModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <form id="delServiceForm" method="POST" action="http://localhost/keys/public/?c=services&a=delService">
+    <form id="delServiceForm" method="POST" action="<?= FULL_BASE_URL ?>/?c=services&a=delService">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="delServiceModalLabel">Eliminar</h5>

@@ -4,7 +4,7 @@
 <div class="row justify-content-center mt-5">
   <div class="col-md-6">
     <h2 class="mb-4">Iniciar Sesión</h2>
-    <form method="POST" action="http://localhost/keys/public/?c=auth&a=login">
+    <form method="POST" action="<?= FULL_BASE_URL ?>/?c=auth&a=login">
       <div class="mb-3">
         <label for="email" class="form-label">Correo electrónico</label>
         <input type="email" class="form-control" id="email" name="email" placeholder="tu@correo.com">

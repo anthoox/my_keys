@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../core/config/config.php';
+
 class AuthController
 {
 
@@ -12,7 +14,7 @@ class AuthController
 
     // Si el usuario ya tiene sesión iniciada, redirigir a servicios
     if (isset($_SESSION['user'])) {
-      header("Location: /keys/public/?c=services&a=alls");
+      header("Location: " .  BASE_URL . "/?c=services&a=alls");
       exit();
     }
     require_once __DIR__ . '/../../core/helpers/validatorForm.php';
@@ -43,7 +45,7 @@ class AuthController
           'password' => $user->getPasswordHash()
         ];
 
-        header("Location: /keys/public/?c=services&a=alls");
+        header("Location: " .  BASE_URL . "/?c=services&a=alls");
         exit();
       } else {
         // Credenciales incorrectas
@@ -64,7 +66,7 @@ class AuthController
 
     // Si el usuario ya tiene sesión activa, lo redirigimos a sus servicios
     if (isset($_SESSION['user'])) {
-      header("Location: /keys/public/?c=services&a=alls");
+      header("Location: " .  BASE_URL . "/?c=services&a=alls");
       exit();
     }
 
@@ -106,7 +108,7 @@ class AuthController
        *  TODO añadir metodo showError para mostrar errores o exito
        * */ 
       echo " <div class='p-2'><div class='d-flex justify-content-center align-items-center  w-100 mt-3'>
-    <div class='alert alert-success col-6'>Usuario registrado, ya puedes <a href='http://localhost/keys/public/?c=auth&a=login'>iniciar sesión.</a></div></div></div>";
+    <div class='alert alert-success col-6'>Usuario registrado, ya puedes <a href='". FULL_BASE_URL . "/?c=auth&a=login'>iniciar sesión.</a></div></div></div>";
     }
   }
 
@@ -139,7 +141,7 @@ class AuthController
     session_destroy();
 
     // Redirigir al login (mejor que incluir la vista directamente)
-    header("Location: /keys/public/?c=auth&a=login"); // ajusta la ruta a tu proyecto
+    header("Location: " .  BASE_URL . "/?c=auth&a=login"); // ajusta la ruta a tu proyecto
     exit();
   }
 }

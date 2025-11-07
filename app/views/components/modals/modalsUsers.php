@@ -23,7 +23,7 @@
   <!-- Modal 2: Cambio de contraseña -->
   <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <form method="POST" action="http://localhost/keys/public/?c=users&a=changeMasterPassword">
+      <form method="POST" action="<?= FULL_BASE_URL ?>/?c=users&a=changeMasterPassword">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="changePasswordModalLabel">Cambiar Contraseña Maestra</h5>

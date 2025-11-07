@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../core/config/config.php';
 
 class UsersController {
 
@@ -11,7 +12,7 @@ class UsersController {
 
     // Verificar sesión activa
     if (!isset($_SESSION['user']['user_id'])) {
-      header("Location: /keys/public/?c=auth&a=login");
+      header("Location: " .  BASE_URL . "/?c=auth&a=login");
       exit();
     }
 
@@ -41,7 +42,7 @@ class UsersController {
 
     // Verificar sesión activa
     if (!isset($_SESSION['user']['user_id'])) {
-      header("Location: /keys/public/?c=auth&a=login");
+      header("Location: " .  BASE_URL . "/?c=auth&a=login");
       exit();
     }
 /**
@@ -65,11 +66,11 @@ class UsersController {
           $_SESSION['error_message'] = "No se realizaron cambios o ocurrió un error al actualizar.";
         }
 
-        header("Location: /keys/public/?c=users&a=account");
+        header("Location: " .  BASE_URL . "/?c=users&a=account");
         exit;
       } else {
         $_SESSION['error_message'] = "Error: falta el ID del usuario.";
-        header("Location: /keys/public/?c=users&a=account");
+        header("Location: " .  BASE_URL . "/?c=users&a=account");
         exit;
       }
     }
@@ -83,7 +84,7 @@ class UsersController {
 
     // Verificar sesión activa
     if (!isset($_SESSION['user']['user_id'])) {
-      header("Location: /keys/public/?c=auth&a=login");
+      header("Location: " .  BASE_URL . "/?c=auth&a=login");
       exit();
     }
 
@@ -98,20 +99,20 @@ class UsersController {
 
       if (!$user_id) {
         $_SESSION['error_message'] = "No se ha podido identificar al usuario.";
-        header("Location: /keys/public/?c=users&a=account");
+        header("Location: " .  BASE_URL . "/?c=users&a=account");
         exit;
       }
 
       // Validaciones básicas
       if (empty($old_password) || empty($new_password) || empty($confirm_password)) {
         $_SESSION['error_message'] = "Todos los campos son obligatorios.";
-        header("Location: /keys/public/?c=users&a=account");
+        header("Location: " .  BASE_URL . "/?c=users&a=account");
         exit;
       }
 
       if ($new_password !== $confirm_password) {
         $_SESSION['error_message'] = "Las contraseñas nuevas no coinciden.";
-        header("Location: /keys/public/?c=users&a=account");
+        header("Location: " .  BASE_URL . "/?c=users&a=account");
         exit;
       }
 
@@ -126,7 +127,7 @@ class UsersController {
         $_SESSION['error_message'] = "La contraseña actual es incorrecta o ha ocurrido un error.";
       }
 
-      header("Location: /keys/public/?c=users&a=account");
+      header("Location: " .  BASE_URL . "/?c=users&a=account");
       exit;
     }
   }
