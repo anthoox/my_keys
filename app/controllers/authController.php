@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../core/config/config.php';
+
 class AuthController
 {
 
@@ -12,21 +14,19 @@ class AuthController
 
     // Si el usuario ya tiene sesión iniciada, redirigir a servicios
     if (isset($_SESSION['user'])) {
-      header("Location: /keys/public/?c=services&a=alls");
+      header("Location: " .  BASE_URL . "/?c=services&a=alls");
       exit();
     }
+    require_once __DIR__ . '/../../core/helpers/validatorForm.php';
 
-    // Si la petición es POST, procesar el formulario
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      /**
-       * TODOS añadir validador de formulario y ahorrar metodo post
-       */
-      $email = trim($_POST['email'] ?? '');
-      $password = trim($_POST['password'] ?? '');
-
+    $data = validateRegistrationForm();
+    // var_dump($data);
+    // die();
+    if (isset($data) && !empty($data)) {
+      $authModel = new AuthModel();
       // Validar campos
-      if (empty($email) || empty($password)) {
-        $error = "Completa todos los campos.";
+      if (empty($data['email']) || empty($data['password'])) {
+        $_SESSION['errors'] = "Completa todos los campos.";
         require_once __DIR__ . '/../views/auth/login.php';
         return;
       }
@@ -34,27 +34,27 @@ class AuthController
       // Cargar modelo
       require_once __DIR__ . '/../models/AuthModel.php';
       $authModel = new AuthModel();
-      $user = $authModel->loginUser($email, $password);
+      $user = $authModel->loginUser($data['email'], $data['password']);
 
       // Si las credenciales son correctas
       if ($user) {
         $_SESSION['user'] = [
-          'user_id' => $user['id'],
-          'username' => $user['username']
+          'user_id' => $user->getId(),
+          'username' => $user->getUsername(),
+          'email' => $user->getEmail(),
+          'password' => $user->getPasswordHash()
         ];
 
-        header("Location: /keys/public/?c=services&a=alls");
+        header("Location: " .  BASE_URL . "/?c=services&a=alls");
         exit();
       } else {
         // Credenciales incorrectas
+        $_SESSION['errors'] = "Usuario o contraseña incorrectos.";
         require_once __DIR__ . '/../views/auth/login.php';
         exit();
       }
-    } else {
-      // Si no se envió por POST, mostrar el formulario
-      require_once __DIR__ . '/../views/auth/login.php';
-      exit();
     }
+    require_once __DIR__ . '/../views/auth/login.php';
   }
 
   public function register()
@@ -66,7 +66,7 @@ class AuthController
 
     // Si el usuario ya tiene sesión activa, lo redirigimos a sus servicios
     if (isset($_SESSION['user'])) {
-      header("Location: /keys/public/?c=services&a=alls");
+      header("Location: " .  BASE_URL . "/?c=services&a=alls");
       exit();
     }
 
@@ -76,28 +76,40 @@ class AuthController
     // Validar y procesar el formulario de registro
     $data = validateRegistrationForm();
 
+    $register_result = false;
     if (isset($data) && !empty($data)) {
       $authModel = new AuthModel();
 
       // Verificar si el correo ya está registrado
       if (isset($data['email']) && $data['email'] !== '') {
+        /**
+         * TODOS Mostrar errores si el email ya existe
+         */
         $result = $authModel->emailExists($data['email']);
-
+        /**
+         * ! corregir desde aqui para los mensajes de error tras intento de registro fallido
+         */
         if ($result) {
           // Guardar el error en variable
-          $errorMessage = "El correo ya está registrado.";
+          $_SESSION['errors'] = "El correo ya está registrado.";
         } else {
           // Registrar al usuario
-          $registerResult = $authModel->createUser(
+          $register_result = $authModel->createUser(
             $data['username'],
             $data['email'],
             password_hash($data['password'], PASSWORD_BCRYPT)
           );
-
         }
       }
     }
     require_once __DIR__ . '/../views/auth/register.php';
+    if ($register_result) {
+      /** 
+       *  TODO añadir metodo showError para mostrar errores o exito
+       * */ 
+      echo " <div class='p-2'><div class='d-flex justify-content-center align-items-center  w-100 mt-3'>
+    <div class='alert alert-success col-6'>Usuario registrado, ya puedes <a href='". FULL_BASE_URL . "/?c=auth&a=login'>iniciar sesión.</a></div></div></div>";
+    }
   }
 
 
@@ -129,7 +141,7 @@ class AuthController
     session_destroy();
 
     // Redirigir al login (mejor que incluir la vista directamente)
-    header("Location: /keys/public/?c=auth&a=login"); // ajusta la ruta a tu proyecto
+    header("Location: " .  BASE_URL . "/?c=auth&a=login"); // ajusta la ruta a tu proyecto
     exit();
   }
 }

@@ -1,117 +1,126 @@
 <?php
+require_once __DIR__ . '/../entities/User.php';
+require_once __DIR__ . '/../../core/database/DataBase.php';
+/**
+ * TODO mostrar los errores en pantalla si es necesario
+ */
 
-class User
-{
-  public $id;
-  public $username;
-  public $email;
-  public $password_hash;
-  public $created_at;
+class usersModel{
 
+  private $db;
 
-  /**
-   * Get the value of id
-   */
-  public function getId()
-  {
-    return $this->id;
-  }
-
-  /**
-   * Set the value of id
-   */
-  public function setId($id): self
-  {
-    $this->id = $id;
-
-    return $this;
-  }
-
-  /**
-   * Get the value of username
-   */
-  public function getUsername()
-  {
-    return $this->username;
-  }
-
-  /**
-   * Set the value of username
-   */
-  public function setUsername($username): self
-  {
-    $this->username = $username;
-
-    return $this;
-  }
-
-  /**
-   * Get the value of email
-   */
-  public function getEmail()
-  {
-    return $this->email;
-  }
-
-  /**
-   * Set the value of email
-   */
-  public function setEmail($email): self
-  {
-    $this->email = $email;
-
-    return $this;
-  }
-
-  /**
-   * Get the value of password_hash
-   */
-  public function getPasswordHash()
-  {
-    return $this->password_hash;
-  }
-
-  /**
-   * Set the value of password_hash
-   */
-  public function setPasswordHash($password_hash): self
-  {
-    $this->password_hash = $password_hash;
-
-    return $this;
-  }
-
-  /**
-   * Get the value of created_at
-   */
-  public function getCreatedAt()
-  {
-    return $this->created_at;
-  }
-
-  /**
-   * Set the value of created_at
-   */
-  public function setCreatedAt($created_at): self
-  {
-    $this->created_at = $created_at;
-
-    return $this;
-  }
-
-
-
-  // probando aqui la conexion
-  public $db;
   public function __construct()
   {
-
     $this->db = DataBase::getInstance()->getConnection();
   }
-  public function getDb()
+
+  public function getUserData($user_id): mixed{
+
+    try {
+      $stmt = $this->db->prepare(
+        "
+      SELECT * from users WHERE id = :user_id LIMIT 1"
+      );
+      $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+      $stmt->execute();
+
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if ($row) {
+        $user_data = new User(
+          $row['id'],
+          $row['username'],
+          $row['email'],
+          $row['password_hash'],
+          $row['created_at']
+        );
+      } else {
+        $user_data = null; // No se encontró usuario
+      }
+
+      // var_dump($user_data); // Para debug
+      // die();
+
+      return $user_data;
+    } catch (PDOException $e) {
+      error_log("Error al obtener servicios: " . $e->getMessage());
+
+      return [];
+    }
+  }
+
+  public function editUserData(int $user_id, ?string $user_name = null, ?string $email = null): bool
   {
-    // var_dump($this->db);
-    // die();
-    echo 'probando la bse de datos';
+    try {
+      $this->db->beginTransaction();
+
+      // Armamos dinámicamente la consulta dependiendo de qué valores vengan
+      $fields = [];
+      $params = ['id' => $user_id];
+
+      if (!empty($user_name)) {
+        $fields[] = "username = :username";
+        $params['username'] = $user_name;
+      }
+
+      if (!empty($email)) {
+        $fields[] = "email = :email";
+        $params['email'] = $email;
+      }
+
+      // Si no hay campos para actualizar, salimos
+      if (empty($fields)) {
+        $this->db->rollBack();
+        return false;
+      }
+
+      $sql = "UPDATE users SET " . implode(", ", $fields) . " WHERE id = :id";
+      $stmt = $this->db->prepare($sql);
+      $result = $stmt->execute($params);
+
+      $this->db->commit();
+
+      return $result;
+    } catch (PDOException $e) {
+      $this->db->rollBack();
+      error_log("Error en editUserData: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function changeUserPassword(int $user_id, string $old_password, string $new_password): bool
+  {
+    try {
+      // 1️⃣ Obtener la contraseña actual del usuario
+      $sql = "SELECT password_hash FROM users WHERE id = :id LIMIT 1";
+      $stmt = $this->db->prepare($sql);
+      $stmt->execute(['id' => $user_id]);
+      $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if (!$user) {
+        return false; // Usuario no encontrado
+      }
+
+      // 2️⃣ Verificar la contraseña actual
+      if (!password_verify($old_password, $user['password_hash'])) {
+        return false; // Contraseña incorrecta
+      }
+
+      // 3️⃣ Generar nuevo hash de la contraseña
+      $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
+
+      // 4️⃣ Actualizar la contraseña
+      $update_sql = "UPDATE users SET password_hash = :new_hash WHERE id = :id";
+      $update_stmt = $this->db->prepare($update_sql);
+      $update_stmt->execute([
+        'new_hash' => $new_hash,
+        'id' => $user_id
+      ]);
+
+      return $update_stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+      error_log("Error al cambiar contraseña: " . $e->getMessage());
+      return false;
+    }
   }
 }

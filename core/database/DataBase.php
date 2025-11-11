@@ -14,7 +14,7 @@ class DataBase
   private function __construct()
   {
     // Cargar variables desde .env
-    $env = parse_ini_file(__DIR__ . '/../.env');
+    $env = parse_ini_file(__DIR__ . '/../../.env');
 
 
     $host = $env['DB_HOST'];

@@ -5,12 +5,14 @@
 require_once __DIR__ . '/autoload.php';
 // Código para manejar controladores y acciones. Página de manejo centralizada.
 if (empty($_GET)) {
-  require_once '../app/views/layout.php';
+  require_once '../app/views/layout/main.php';
 
   exit();
 }
-
-require_once '../app/views/layout.php';
+/** 
+ * TODO Eliminar mensajes y llevar a vista de login mostrando el erro modo dev y quitarlo
+*/
+require_once '../app/views/layout/main.php';
 
 if (isset($_GET)) {
   // Si existe el controlador en la URL, lo asigna a una variable

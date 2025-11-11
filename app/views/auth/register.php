@@ -4,7 +4,7 @@
 <div class="row justify-content-center mt-5">
   <div class="col-md-6">
     <h2 class="mb-4">Crear cuenta</h2>
-    <form method="post" action="http://localhost/keys/public/?c=auth&a=register">
+    <form method="post" action="<?= FULL_BASE_URL ?>/?c=auth&a=register">
       <div class=" mb-3">
         <label for="username" class="form-label">Usuario</label>
         <input type="text" class="form-control" id="username" name="username" placeholder="Nombre">
@@ -29,6 +29,6 @@ if (isset($_SESSION['errors'])) {
   session_destroy();
 }
 
-  
+
 
 ?>
