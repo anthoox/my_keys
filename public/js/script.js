@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Script Bootstrap para abrir el segundo modal
-
 document.addEventListener("DOMContentLoaded", () => {
 
   // Botón dentro del primer modal
@@ -72,5 +71,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// Script para copiar nombre de usuario en portapapeles
+document.addEventListener("DOMContentLoaded", () => {
+
+
+  const btnCopy = document.getElementById('btnCopy');
+  btnCopy.addEventListener('click', () => {
+    const name = document.getElementById('userName');
+    const username = name.textContent;
+    navigator.clipboard.writeText(username)
+    /** 
+     * TODO mostrar mensajes por pantalla, sino quitar mensajes.  
+     */
+      .then(() => {
+        console.log("Copiado al portapapeles!");
+      })
+      .catch(err => {
+        console.error("Error al copiar:", err);
+      });
+  })
+})
 
 
