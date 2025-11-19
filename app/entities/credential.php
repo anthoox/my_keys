@@ -33,6 +33,7 @@ class Credential
 
   public function setPassword($password)
   {
-    $this->passwordEncrypted = password_hash($password, PASSWORD_BCRYPT);
+
+    $this->passwordEncrypted = encryptPassword($password);
   }
 }

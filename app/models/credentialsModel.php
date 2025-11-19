@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../entities/credential.php';
 require_once __DIR__ . '/../../core/database/DataBase.php';
+require_once __DIR__ . '/../../core/helpers/crypto.php';
 
 class CredentialsModel
 {
@@ -27,5 +28,26 @@ class CredentialsModel
       error_log("Error al crear credencial: " . $e->getMessage());
       return false;
     }
+  }
+
+  public function getDecryptedPassword($service_id)
+  {
+
+    $sql = "SELECT password_encrypted FROM credentials WHERE service_id = :id LIMIT 1";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':id', $service_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$row) {
+
+      return null; // no existe la credencial
+    }
+
+    // aquí desencriptamos la contraseña
+    $decrypted = decryptPassword($row['password_encrypted']);
+
+    return $decrypted;
   }
 }

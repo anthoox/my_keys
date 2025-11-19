@@ -79,6 +79,7 @@ class ServicesController
     );
 
     if ($service_id) {
+      // require_once __DIR__ . '/../../core/helpers/crypto.php';
       // Crear credencial como objeto
       $credential = new Credential($service_id, $user_name);
       $credential->setPassword($data['password']);
@@ -172,5 +173,42 @@ class ServicesController
         exit;
       }
     }
+  }
+
+  public function getPassword()
+  {
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
+
+    // Verificar sesión activa
+    if (!isset($_SESSION['user']['user_id'])) {
+      header("Location: " .  BASE_URL . "/?c=auth&a=login");
+      exit();
+    }
+    $service_id = $_GET['id'] ?? null;
+
+    if (!$service_id) {
+      echo json_encode(['error' => 'ID no válido']);
+      return;
+    }
+
+    require_once __DIR__ . '/../models/servicesModel.php';
+    require_once __DIR__ . '/../models/credentialsModel.php';
+    require_once __DIR__ . '/../entities/Credential.php';
+
+    $model = new credentialsModel();
+    $password = $model->getDecryptedPassword(service_id: $service_id);
+    if ($password) {
+      $_SESSION['success'] = "Copiado";
+    } else {
+      $_SESSION['errors'] = "Error al copiar";
+    }
+
+    echo json_encode(['password' => $password]);
+
+    header("Location: " .  BASE_URL . "/?c=services&a=alls");
+    exit();
+
   }
 }
