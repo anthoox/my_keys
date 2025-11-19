@@ -50,7 +50,7 @@ function renderServices(array $services)
               <p class='mb-2'><strong>Usuario:</strong><span id='userName'> {$user_name}</span> </p>
             </div>
             <div>
-              <button id='btnCopy' class='btn btn-sm btn-copy p-1'>
+              <button class='btn btn-sm btn-copy p-1'>
                 <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'>
                  <g fill='none' stroke='#666666' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'>
                     <path d='M7 9.667A2.667 2.667 0 0 1 9.667 7h8.666A2.667 2.667 0 0 1 21 9.667v8.666A2.667 2.667 0 0 1 18.333 21H9.667A2.667 2.667 0 0 1 7 18.333z' />

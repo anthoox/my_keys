@@ -75,22 +75,33 @@ document.addEventListener("DOMContentLoaded", () => {
 // Script para copiar nombre de usuario en portapapeles
 document.addEventListener("DOMContentLoaded", () => {
 
+  // Selecciona todos los botones de copiar
+  const btnsCopy = document.querySelectorAll('.btn-copy');
 
-  const btnCopy = document.getElementById('btnCopy');
-  btnCopy.addEventListener('click', () => {
-    const name = document.getElementById('userName');
-    const username = name.textContent;
-    navigator.clipboard.writeText(username)
-    /** 
-     * TODO mostrar mensajes por pantalla, sino quitar mensajes.  
-     */
-      .then(() => {
-        console.log("Copiado al portapapeles!");
-      })
-      .catch(err => {
-        console.error("Error al copiar:", err);
-      });
-  })
-})
+  btnsCopy.forEach(btn => {
 
+    btn.addEventListener('click', (e) => {
+
+      // Contenedor donde está el usuario
+      const container = e.currentTarget.closest('.mb-3');
+
+      // Obtiene el texto del usuario (evitando el "Usuario:")
+      const username = container.querySelector('p').textContent.replace('Usuario:', '').trim();
+/**
+ * todo mostrar errores en pantalla o no mostrarlos
+ */
+      // Copiar al portapapeles
+      navigator.clipboard.writeText(username)
+        .then(() => {
+          console.log("Copiado:", username);
+        })
+        .catch(err => {
+          console.error("Error al copiar:", err);
+        });
+
+    });
+
+  });
+
+});
 
