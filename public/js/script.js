@@ -134,4 +134,45 @@ document.addEventListener("DOMContentLoaded", () =>{
       }
     })
   })
+
+  const showButtons = document.querySelectorAll("[data-show]");
+
+  showButtons.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.show;
+      // Seleccionar el span que contiene los asteriscos
+      const passwordSpan = btn.closest(".mb-3").querySelector(".password");
+      const passwords = document.querySelectorAll('.password');
+    
+      if (!passwordSpan) return;
+
+      // Toggle: si ya está visible, ocultar
+      if (passwordSpan.dataset.visible === "true") {
+        passwordSpan.textContent = "********";
+        passwordSpan.dataset.visible = "false";
+        return;
+      }
+
+      try {
+        // Petición para obtener la contraseña desencriptada
+        const response = await fetch(`${BASE_URL}/?c=services&a=getPassword&id=${id}`);
+        const data = await response.json();
+
+        if (data.success) {
+          // Configuración para solo mostrar una clave a la vez
+          passwords.forEach(pass => {
+            pass.textContent = "********";
+          })
+          // Mostrar la contraseña en el span
+          passwordSpan.textContent = data.password;
+          passwordSpan.dataset.visible = "true"; // marcar como visible
+        } else {
+          console.error("Error:", data.message);
+        }
+
+      } catch (error) {
+        console.error("Fallo al obtener la contraseña:", error);
+      }
+    })
+  })
 })
