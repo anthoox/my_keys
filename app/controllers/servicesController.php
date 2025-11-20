@@ -180,35 +180,49 @@ class ServicesController
     if (session_status() === PHP_SESSION_NONE) {
       session_start();
     }
+    // Limpia cualquier output previo del buffer
+    ob_clean();
 
+    header("Content-Type: application/json");
     // Verificar sesión activa
     if (!isset($_SESSION['user']['user_id'])) {
-      header("Location: " .  BASE_URL . "/?c=auth&a=login");
-      exit();
+      echo json_encode([
+        "success" => false,
+        "message" => "No autorizado"
+      ]);
+      exit;
     }
     $service_id = $_GET['id'] ?? null;
 
     if (!$service_id) {
-      echo json_encode(['error' => 'ID no válido']);
-      return;
+      echo json_encode([
+        "success" => false,
+        "message" => "ID no válido"
+      ]);
+      exit;
     }
 
-    require_once __DIR__ . '/../models/servicesModel.php';
+    // require_once __DIR__ . '/../models/servicesModel.php';
     require_once __DIR__ . '/../models/credentialsModel.php';
-    require_once __DIR__ . '/../entities/Credential.php';
+    // require_once __DIR__ . '/../entities/Credential.php';
 
     $model = new credentialsModel();
     $password = $model->getDecryptedPassword(service_id: $service_id);
-    if ($password) {
-      $_SESSION['success'] = "Copiado";
-    } else {
-      $_SESSION['errors'] = "Error al copiar";
+    if (!$password) {
+      echo json_encode([
+        "success" => false,
+        "message" => "No se encontró la contraseña"
+      ]);
+      exit;
     }
 
-    echo json_encode(['password' => $password]);
-
-    header("Location: " .  BASE_URL . "/?c=services&a=alls");
-    exit();
+    // RESPUESTA JSON LIMPIA
+    header('Content-Type: application/json');
+    echo json_encode([
+      "success" => true,
+      "password" => $password
+    ]);
+    exit; // ⬅ SÚPER IMPORTANTE
 
   }
 }

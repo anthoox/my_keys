@@ -105,3 +105,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+// Script para copiar contraseña
+document.addEventListener("DOMContentLoaded", () =>{
+  const copyButtons = document.querySelectorAll("[data-copy]");
+
+  copyButtons.forEach(btn => {
+    btn.addEventListener("click",async() => {
+      const id = btn.dataset.copy;
+      try {
+        // Petición para obtener la contraseña desencriptada
+        const response = await fetch(`${BASE_URL}/?c=services&a=getPassword&id=${id}`);
+        const data = await response.json();
+
+/**
+ * TODO mostrar mensajes de copiado o error
+ */
+        if (data.success) {
+          await navigator.clipboard.writeText(data.password);
+          console.log("Contraseña copiada:");
+
+          // aquí puedes mostrar un mensaje bonito en tu UI
+        } else {
+          console.error("Error:", data.message);
+        }
+
+      } catch (error) {
+        console.error("Fallo al copiar:", error);
+      }
+    })
+  })
+})
