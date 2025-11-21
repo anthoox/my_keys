@@ -1,152 +1,199 @@
+/* ============================================================================
+    0. NO MOSTRAR MENSAJES EN CONSOLA
+============================================================================ */
+/**
+ * Funcion para no mostrar mensajes en consola dependiendo del valor de window.APP_DEBUG
+ */
+function debugLog(msg) {
+  if (window.APP_DEBUG === true) {
+    console.log(msg);
+  }
+}
+window.APP_DEBUG = false;
 
 /**
- * TODO corregir para que no se muestren los errores en consola
+* Inicializa todos los módulos de la aplicación una vez cargado el DOM.
+*/
+document.addEventListener("DOMContentLoaded", () => {
+
+  initEditModal();
+  initDeleteModal();
+  initChainModals();
+  initCopyUsername();
+  initCopyPassword();
+  initShowPassword();
+
+  debugLog("JS cargado y módulos inicializados");
+});
+
+/* ============================================================================
+    1. MODAL DE EDICIÓN DE SERVICIO
+============================================================================ */
+
+/**
+ * Relaciona los botones "Editar" con el modal de edición.
+ * Rellena automáticamente los campos del formulario dentro del modal.
  */
-document.addEventListener('DOMContentLoaded', () => {
+function initEditModal() {
   const editButtons = document.querySelectorAll('.edit-service-btn');
-  const editId = document.getElementById('editServiceId');
-  const editName = document.getElementById('editServiceName');
-  const editUser = document.getElementById('editServiceUser');
-  const editPassword = document.getElementById('editServicePassword');
+
+  if (!editButtons.length) return;
 
   editButtons.forEach(button => {
-
     button.addEventListener('click', () => {
-      editId.value = button.getAttribute('data-id');
-      editName.value = button.getAttribute('data-name');
-      editUser.value = button.getAttribute('data-user')
-      // ⚠️ más adelante puedes descifrar la contraseña real si la tienes
+      document.getElementById('editServiceId').value = button.dataset.id;
+      document.getElementById('editServiceName').value = button.dataset.name;
+      document.getElementById('editServiceUser').value = button.dataset.user;
 
-      editPassword.value = '';
+      // La contraseña nunca se precarga por seguridad
+      document.getElementById('editServicePassword').value = "";
     });
   });
+}
 
-  // script para llevar id al formulario del modal para eliminar servicio
+/* ============================================================================
+    2. MODAL DE ELIMINACIÓN DE SERVICIO
+============================================================================ */
+
+/**
+ * Lleva el ID del servicio al modal de confirmación de eliminación.
+ */
+function initDeleteModal() {
   const delModal = document.getElementById('delServiceModal');
+  if (!delModal) return;
+
   delModal.addEventListener('show.bs.modal', event => {
-    const button = event.relatedTarget; // el botón que disparó el modal
-    const serviceId = button.getAttribute('data-id');
+    const button = event.relatedTarget;
+    const serviceId = button.dataset.id;
 
     document.getElementById('deleteServiceId').value = serviceId;
   });
+}
 
-  // script para llevar id al formulario del modal para editar servicio
-  const editModal = document.getElementById('editServiceModal');
-  editModal.addEventListener('show.bs.modal', event => {
+/* ============================================================================
+    3. ENCADENAR MODALES
+============================================================================ */
 
-    const button = event.relatedTarget; // el botón que disparó el modal
-    const serviceId = button.getAttribute('data-id');
+/**
+ * Permite cerrar un modal de advertencia y abrir el modal de cambio de contraseña.
+ * Esto evita comportamientos erráticos de Bootstrap cuando varios modales se encadenan.
+ */
+function initChainModals() {
 
-    document.getElementById('editServiceId').value = serviceId;
-  });
-
-});
-
-// Script Bootstrap para abrir el segundo modal
-document.addEventListener("DOMContentLoaded", () => {
-
-  // Botón dentro del primer modal
   const btnOpen = document.getElementById("openChangePasswordModal");
-
-  // Los dos modales
   const modalWarningEl = document.getElementById("warningModal");
   const modalChangeEl = document.getElementById("changePasswordModal");
 
-  if (btnOpen && modalWarningEl && modalChangeEl) {
-    const modalWarning = bootstrap.Modal.getOrCreateInstance(modalWarningEl);
-    const modalChange = bootstrap.Modal.getOrCreateInstance(modalChangeEl);
+  if (!btnOpen || !modalWarningEl || !modalChangeEl) return;
 
-    btnOpen.addEventListener("click", () => {
-      // Cerrar el primer modal
-      modalWarning.hide();
+  const modalWarning = bootstrap.Modal.getOrCreateInstance(modalWarningEl);
+  const modalChange = bootstrap.Modal.getOrCreateInstance(modalChangeEl);
 
-      // Esperar a que se cierre y luego abrir el segundo
-      modalWarningEl.addEventListener(
-        "hidden.bs.modal",
-        function handler() {
-          modalChange.show();
-          modalWarningEl.removeEventListener("hidden.bs.modal", handler);
-        }
-      );
-    });
-  }
-});
+  btnOpen.addEventListener("click", () => {
+    modalWarning.hide();
 
-// Script para copiar nombre de usuario en portapapeles
-document.addEventListener("DOMContentLoaded", () => {
+    modalWarningEl.addEventListener(
+      "hidden.bs.modal",
+      function handler() {
+        modalChange.show();
+        modalWarningEl.removeEventListener("hidden.bs.modal", handler);
+      }
+    );
+  });
+}
 
-  // Selecciona todos los botones de copiar
+/* ============================================================================
+    4. COPIAR NOMBRE DE USUARIO
+============================================================================ */
+
+/**
+ * Copia el nombre de usuario al portapapeles cuando se hace clic en el botón.
+ */
+function initCopyUsername() {
   const btnsCopy = document.querySelectorAll('.btn-copy');
 
+  if (!btnsCopy.length) return;
+
   btnsCopy.forEach(btn => {
+    btn.addEventListener("click", (e) => {
 
-    btn.addEventListener('click', (e) => {
-
-      // Contenedor donde está el usuario
+      // Contenedor donde está el texto del usuario
       const container = e.currentTarget.closest('.mb-3');
 
-      // Obtiene el texto del usuario (evitando el "Usuario:")
-      const username = container.querySelector('p').textContent.replace('Usuario:', '').trim();
-/**
- * todo mostrar errores en pantalla o no mostrarlos
- */
-      // Copiar al portapapeles
+      const username = container
+        .querySelector('p')
+        .textContent
+        .replace('Usuario:', '')
+        .trim();
+
       navigator.clipboard.writeText(username)
         .then(() => {
-          console.log("Copiado:", username);
+          debugLog("Nombre de usuario copiado.");
         })
         .catch(err => {
-          console.error("Error al copiar:", err);
+          console.error("Error al copiar nombre:", err);
         });
-
     });
-
   });
+}
 
-});
-
-// Script para copiar contraseña
-document.addEventListener("DOMContentLoaded", () =>{
-  const copyButtons = document.querySelectorAll("[data-copy]");
-
-  copyButtons.forEach(btn => {
-    btn.addEventListener("click",async() => {
-      const id = btn.dataset.copy;
-      try {
-        // Petición para obtener la contraseña desencriptada
-        const response = await fetch(`${BASE_URL}/?c=services&a=getPassword&id=${id}`);
-        const data = await response.json();
+/* ============================================================================
+    5. COPIAR CONTRASEÑA DESENCRIPTADA
+============================================================================ */
 
 /**
- * TODO mostrar mensajes de copiado o error
+ * Copia la contraseña desencriptada obtenida por AJAX desde el backend.
  */
+function initCopyPassword() {
+  const copyButtons = document.querySelectorAll("[data-copy]");
+
+  if (!copyButtons.length) return;
+
+  copyButtons.forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.copy;
+
+      try {
+        const response = await fetch(`${BASE_URL}?c=services&a=getPassword&id=${id}`);
+
+        const data = await response.json();
+
         if (data.success) {
           await navigator.clipboard.writeText(data.password);
-          console.log("Contraseña copiada:");
-
-          // aquí puedes mostrar un mensaje bonito en tu UI
+          debugLog("Contraseña copiada.");
         } else {
-          console.error("Error:", data.message);
+          console.error("Error al obtener contraseña:", data.message);
         }
 
       } catch (error) {
-        console.error("Fallo al copiar:", error);
+        console.error("Fallo al copiar contraseña:", error);
       }
-    })
-  })
+    });
+  });
+}
 
+/* ============================================================================
+    6. MOSTRAR / OCULTAR CONTRASEÑA (TOGGLE)
+============================================================================ */
+
+/**
+ * Permite revelar una sóla contraseña a la vez.
+ * Si vuelves a hacer clic se oculta.
+ */
+function initShowPassword() {
   const showButtons = document.querySelectorAll("[data-show]");
 
+  if (!showButtons.length) return;
+
   showButtons.forEach(btn => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener("click", async () => {
+
       const id = btn.dataset.show;
-      // Seleccionar el span que contiene los asteriscos
       const passwordSpan = btn.closest(".mb-3").querySelector(".password");
-      const passwords = document.querySelectorAll('.password');
-    
+
       if (!passwordSpan) return;
 
-      // Toggle: si ya está visible, ocultar
+      // Si ya está visible, volver a ocultar
       if (passwordSpan.dataset.visible === "true") {
         passwordSpan.textContent = "********";
         passwordSpan.dataset.visible = "false";
@@ -154,25 +201,29 @@ document.addEventListener("DOMContentLoaded", () =>{
       }
 
       try {
-        // Petición para obtener la contraseña desencriptada
-        const response = await fetch(`${BASE_URL}/?c=services&a=getPassword&id=${id}`);
+        const response = await fetch(`${BASE_URL}?c=services&a=getPassword&id=${id}`);
         const data = await response.json();
 
         if (data.success) {
-          // Configuración para solo mostrar una clave a la vez
-          passwords.forEach(pass => {
-            pass.textContent = "********";
-          })
-          // Mostrar la contraseña en el span
+
+          // Oculta todas las contraseñas visibles antes de mostrar una
+          document.querySelectorAll(".password").forEach(p => {
+            p.textContent = "********";
+            p.dataset.visible = "false";
+          });
+
+          // Muestra la contraseña desencriptada
           passwordSpan.textContent = data.password;
-          passwordSpan.dataset.visible = "true"; // marcar como visible
+          passwordSpan.dataset.visible = "true";
+
         } else {
           console.error("Error:", data.message);
         }
 
       } catch (error) {
-        console.error("Fallo al obtener la contraseña:", error);
+        console.error("Error al obtener contraseña:", error);
       }
-    })
-  })
-})
+
+    });
+  });
+}

@@ -123,8 +123,13 @@ class ServicesModel
       $now = date('Y-m-d H:i:s');
 
       if (!empty($password)) {
+        require_once __DIR__ . '/../entities/Credential.php';
+        require_once __DIR__ . '/../models/credentialsModel.php';
+
+        $credential = new Credential($service_id,$service_name);
+        $credential->setPassword($password);
         // Si se envía nueva contraseña, hashearla
-        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        $password_encripted = $credential->getPasswordEncrypted();
 
         $sqlCred = "UPDATE credentials
                         SET username = :username,
@@ -134,7 +139,7 @@ class ServicesModel
         $stmtCred = $this->db->prepare($sqlCred);
         $stmtCred->execute([
           'username'           => $username,
-          'password_encrypted' => $password_hash,
+          'password_encrypted' => $password_encripted,
           'updated_at'         => $now,
           'service_id'         => $service_id
         ]);

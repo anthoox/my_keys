@@ -5,7 +5,7 @@
 require_once __DIR__ . '/autoload.php';
 
 // MODO DEBUG (true = muestra errores, false = limpio para producción)
-define('DEBUG_MODE', false);
+define('DEBUG_MODE', true);
 // Código para manejar controladores y acciones. Página de manejo centralizada.
 
 // Función para redirigir siempre al login
