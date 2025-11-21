@@ -3,40 +3,59 @@
 <?php
 
 require_once __DIR__ . '/autoload.php';
-// Código para manejar controladores y acciones. Página de manejo centralizada.
-if (empty($_GET)) {
-  require_once '../app/views/layout/main.php';
 
+// MODO DEBUG (true = muestra errores, false = limpio para producción)
+define('DEBUG_MODE', false);
+// Código para manejar controladores y acciones. Página de manejo centralizada.
+
+// Función para redirigir siempre al login
+function redirectToLogin()
+{
+  header("Location: " . FULL_BASE_URL . "/?c=auth&a=login");
   exit();
 }
-/** 
- * TODO Eliminar mensajes y llevar a vista de login mostrando el erro modo dev y quitarlo
-*/
+
+// Evitar que PHP muestre errores en producción
+if (!DEBUG_MODE) {
+  ini_set('display_errors', 0);
+  error_reporting(0);
+}
+
+if (empty($_GET)) {
+  require_once '../app/views/layout/main.php';
+  redirectToLogin();
+}
+
 require_once '../app/views/layout/main.php';
 
-if (isset($_GET)) {
-  // Si existe el controlador en la URL, lo asigna a una variable
-  if (isset($_GET['c'])) {
-    $controller_name = $_GET['c'] . 'Controller';
-    // var_dump($_GET);
-    // die();
-  } else {
-    echo 'La página que buscas no existe';
-    exit();
+
+// Si no viene "c" en la URL → error → login
+if (!isset($_GET['c'])) {
+  if (DEBUG_MODE) {
+    // echo "Controlador no especificado";
   }
-
-  // Si existe la clase del controlador, crea una instancia
-  if (class_exists($controller_name)) {
-
-    $controller = new $controller_name();
-    if (isset($_GET['a']) && method_exists($controller, $_GET['a'])) {
-      $action = $_GET['a'];
-
-      $controller->$action();
-    } else {
-      echo "La acción/método no existe.";
-    }
-  } else {
-    echo "La Clase no existe.";
-  }
+  redirectToLogin();
 }
+
+$controller_name = $_GET['c'] . 'Controller';
+
+// Verificar existencia del controlador
+if (!class_exists($controller_name)) {
+  if (DEBUG_MODE) {
+    echo "Controlador '$controller_name' no existe";
+  }
+  redirectToLogin();
+}
+
+$controller = new $controller_name();
+
+// Verificar existencia de la acción
+if (!isset($_GET['a']) || !method_exists($controller, $_GET['a'])) {
+  if (DEBUG_MODE) {
+    echo "La acción solicitada no existe";
+  }
+  redirectToLogin();
+}
+// Si todo OK → ejecutar acción
+$action = $_GET['a'];
+$controller->$action();

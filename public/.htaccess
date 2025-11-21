@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /keys/public/
+
+# Permitir archivos existentes (CSS, JS, imágenes)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirigir todo el resto al index.php
+RewriteRule ^(.*)$ index.php?$1 [L,QSA]
+Options -Indexes
