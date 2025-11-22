@@ -26,9 +26,7 @@ class ServicesController
    */
   public function alls()
   {
-    if (session_status() === PHP_SESSION_NONE) {
-      session_start();
-    }
+    startSession();
 
     // Verificar autenticación
     if (!isset($_SESSION['user']['user_id'])) {
@@ -56,7 +54,7 @@ class ServicesController
     }
 
     require_once __DIR__ . '/../views/services/services.php';
-    die();
+    exit();
   }
 
   /**
@@ -73,9 +71,7 @@ class ServicesController
    */
   public function store()
   {
-    if (session_status() === PHP_SESSION_NONE) {
-      session_start();
-    }
+    startSession();
 
     // Verificar autenticación
     if (!isset($_SESSION['user']['user_id'])) {
@@ -134,21 +130,19 @@ class ServicesController
   }
 
   /**
-   * Elimina un servicio y sus credenciales.
+   * Elimina un servicio existente de un usuario.
    *
    * Flujo:
    * 1. Verifica sesión activa.
-   * 2. Verifica si llega un ID mediante POST.
-   * 3. Carga el modelo.
-   * 4. Intenta eliminar el servicio.
-   * 5. Guarda mensaje de éxito/error en sesión.
-   * 6. Redirige.
+   * 2. Comprueba que el método sea POST.
+   * 3. Valida que el ID del servicio llegue correctamente.
+   * 4. Verifica que el servicio pertenezca al usuario logueado.
+   * 5. Llama al modelo para eliminar el servicio.
+   * 6. Redirige a la vista de servicios con mensajes de éxito o error.
    */
   public function delService()
   {
-    if (session_status() === PHP_SESSION_NONE) {
-      session_start();
-    }
+    startSession();
 
     // Verificar autenticación
     if (!isset($_SESSION['user']['user_id'])) {
@@ -156,22 +150,39 @@ class ServicesController
       exit();
     }
 
-    // Verificar ID
-    if (!isset($_POST['service_id']) || empty($_POST['service_id'])) {
-      $_SESSION['errors'] = "ID de servicio no válido.";
+    // Validar que llega el ID por POST
+    if (
+      $_SERVER['REQUEST_METHOD'] !== 'POST' ||
+      !isset($_POST['service_id']) ||
+      empty($_POST['service_id'])
+    ) {
+
+      $_SESSION['errors'] = "Solicitud no válida.";
       header("Location: " . BASE_URL . "/?c=services&a=alls");
+      exit();
     }
 
     $service_id = intval($_POST['service_id']);
+    $user_id = $_SESSION['user']['user_id'];
 
     // Cargar modelo
     require_once __DIR__ . '/../models/ServicesModel.php';
     $serviceModel = new ServicesModel();
 
-    // Eliminar servicio
+    // -------------------------------
+    // 🔐 Verificar que el servicio es del usuario logueado
+    // -------------------------------
+    if (!$serviceModel->belongsToUser($service_id, $user_id)) {
+      $_SESSION['errors'] = "No tienes permisos para eliminar este servicio.";
+      header("Location: " . BASE_URL . "/?c=services&a=alls");
+      exit();
+    }
+
+    // -------------------------------
+    // 🚮 Eliminar servicio
+    // -------------------------------
     $deleted = $serviceModel->delService($service_id);
 
-    // Mensajes
     if ($deleted) {
       $_SESSION['success'] = "Servicio eliminado correctamente.";
     } else {
@@ -183,20 +194,24 @@ class ServicesController
   }
 
   /**
-   * Edita un servicio existente.
+   * Edita un servicio existente de un usuario.
    *
    * Flujo:
-   * 1. Verifica sesión activa.
-   * 2. Comprueba método POST.
-   * 3. Recoge datos del formulario.
-   * 4. Llama al modelo para actualizar.
-   * 5. Redirige sin mostrar mensajes (podrías agregarlos).
+   * 1. Verifica sesión activa y autenticación.
+   * 2. Si la petición es GET:
+   *    - Obtiene el ID del servicio.
+   *    - Verifica que el servicio pertenezca al usuario.
+   *    - Carga la vista de edición con los datos del servicio.
+   * 3. Si la petición es POST:
+   *    - Recoge datos del formulario.
+   *    - Verifica que los campos obligatorios estén presentes.
+   *    - Verifica propiedad del servicio.
+   *    - Llama al modelo para actualizar el servicio y la credencial.
+   *    - Redirige a la vista de servicios con mensajes de éxito o error.
    */
   public function editService()
   {
-    if (session_status() === PHP_SESSION_NONE) {
-      session_start();
-    }
+    startSession();
 
     // Verificar autenticación
     if (!isset($_SESSION['user']['user_id'])) {
@@ -204,82 +219,140 @@ class ServicesController
       exit();
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../models/ServicesModel.php';
+    $serviceModel = new ServicesModel();
+    $user_id = $_SESSION['user']['user_id'];
 
-      $id = $_POST['service_id'] ?? null;
-      $name = $_POST['name'] ?? null;
-      $user = $_POST['user'] ?? null;
-      $password = $_POST['password'] ?? null;
-
-      if ($id && $name && $user) {
-
-        $model = new ServicesModel();
-        $updated = $model->editService($id, $name, $user, $password);
-
-        header("Location: " . BASE_URL . "/?c=services&a=alls");
-        exit;
-      } else {
-
+    // PETICIÓN GET -> mostrar formulario de edición
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+      $service_id = $_GET['id'] ?? null;
+      if (!$service_id || !$serviceModel->belongsToUser($service_id, $user_id)) {
+        $_SESSION['errors'] = "No tienes permisos para editar este servicio.";
         header("Location: " . BASE_URL . "/?c=services&a=alls");
         exit();
       }
+
+      // Obtener servicio
+      $service = $serviceModel->findById($service_id);
+      require '../app/views/services/edit.php';
+      exit();
+    }
+
+    // PETICIÓN POST -> procesar edición
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $service_id = $_POST['service_id'] ?? null;
+      $name       = $_POST['name'] ?? null;
+      $user       = $_POST['user'] ?? null;
+      $password   = $_POST['password'] ?? null;
+
+      // Validar campos obligatorios
+      if (!$service_id || !$name || !$user) {
+        $_SESSION['errors'] = "Datos incompletos para editar el servicio.";
+        header("Location: " . BASE_URL . "/?c=services&a=alls");
+        exit();
+      }
+
+      // Verificar propiedad del servicio
+      if (!$serviceModel->belongsToUser($service_id, $user_id)) {
+        $_SESSION['errors'] = "No tienes permisos para editar este servicio.";
+        header("Location: " . BASE_URL . "/?c=services&a=alls");
+        exit();
+      }
+
+      // Actualizar servicio
+      $updated = $serviceModel->editService($service_id, $name, $user, $password);
+
+      if ($updated) {
+        $_SESSION['success'] = "Servicio actualizado correctamente.";
+      } else {
+        $_SESSION['errors'] = "No se pudo actualizar el servicio.";
+      }
+
+      header("Location: " . BASE_URL . "/?c=services&a=alls");
+      exit();
     }
   }
 
   /**
-   * Devuelve la contraseña desencriptada vía AJAX (JSON).
-   *
-   * Flujo:
-   * 1. Verifica sesión.
-   * 2. Limpia buffers para evitar errores JSON.
-   * 3. Verifica ID.
-   * 4. Llama al modelo de credenciales.
-   * 5. Devuelve JSON limpio con la contraseña desencriptada.
+   * Devuelve la contraseña desencriptada de un servicio específico en formato JSON.
+   * 
+   * Seguridad:
+   * - Solo el usuario propietario del servicio puede obtener la contraseña.
+   * - Evita cualquier output previo que rompa el JSON.
+   * 
+   * Método: GET
+   * Parámetros esperados: ?id=ID_DEL_SERVICIO
+   * Respuesta JSON:
+   * {
+   *   "success": true/false,
+   *   "password": "contraseña" | null,
+   *   "message": "mensaje de error" | null
+   * }
    */
   public function getPassword()
   {
-    if (session_status() === PHP_SESSION_NONE) {
-      session_start();
+    // Iniciar sesión si no está iniciada
+    startSession();
+
+    // Limpiar buffer de salida previo para asegurar JSON válido
+    if (ob_get_length()) {
+      ob_clean();
     }
 
-    // Evitar output que rompa JSON
-    ob_clean();
-
+    // Cabecera para indicar que la respuesta es JSON
     header("Content-Type: application/json");
 
-    // Verificar autenticación
-    if (!isset($_SESSION['user']['user_id'])) {
-      echo json_encode([
-        "success" => false,
-        "message" => "No autorizado"
-      ]);
-      exit;
-    }
-
+    // Recuperar ID del servicio desde GET
     $service_id = $_GET['id'] ?? null;
 
+    // Verificar que se haya proporcionado un ID válido
     if (!$service_id) {
       echo json_encode([
         "success" => false,
         "message" => "ID no válido"
       ]);
-      exit;
+      exit();
     }
 
+    // ID del usuario logueado
+    $user_id = $_SESSION['user']['user_id'] ?? null;
+
+    // Validación de sesión
+    if (!$user_id) {
+      echo json_encode([
+        "success" => false,
+        "message" => "No autorizado"
+      ]);
+      exit();
+    }
+
+    // Verificar que el servicio pertenece al usuario
+    $serviceModel = new ServicesModel();
+    if (!$serviceModel->belongsToUser($service_id, $user_id)) {
+      echo json_encode([
+        "success" => false,
+        "message" => "No autorizado"
+      ]);
+      exit();
+    }
+
+    // Cargar modelo de credenciales
     require_once __DIR__ . '/../models/credentialsModel.php';
+    $credModel = new CredentialsModel();
 
-    $model = new CredentialsModel();
-    $password = $model->getDecryptedPassword(service_id: $service_id);
+    // Obtener contraseña desencriptada
+    $password = $credModel->getDecryptedPassword(service_id: $service_id);
 
+    // Validar que se obtuvo la contraseña
     if (!$password) {
       echo json_encode([
         "success" => false,
         "message" => "No se encontró la contraseña"
       ]);
-      exit;
+      exit();
     }
 
-    // Respuesta JSON
+    // Respuesta exitosa
     echo json_encode([
       "success" => true,
       "password" => $password

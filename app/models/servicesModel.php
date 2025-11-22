@@ -180,4 +180,23 @@ class ServicesModel
       return false;
     }
   }
+
+  public function belongsToUser($service_id, $user_id)
+  {
+    $sql = "SELECT COUNT(*) FROM services WHERE id = :id AND user_id = :user_id LIMIT 1";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':id', $service_id, PDO::PARAM_INT);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchColumn() > 0;
+  }
+
+  public function findById($id)
+  {
+    $sql = "SELECT * FROM services WHERE id = :id LIMIT 1";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([':id' => $id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
 }
