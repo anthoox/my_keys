@@ -79,7 +79,6 @@ class ServicesController
     );
 
     if ($service_id) {
-      // require_once __DIR__ . '/../../core/helpers/crypto.php';
       // Crear credencial como objeto
       $credential = new Credential($service_id, $user_name);
       $credential->setPassword($data['password']);

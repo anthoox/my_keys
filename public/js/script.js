@@ -2,7 +2,7 @@
     0. NO MOSTRAR MENSAJES EN CONSOLA
 ============================================================================ */
 /**
- * Funcion para no mostrar mensajes en consola dependiendo del valor de window.APP_DEBUG
+ * Previene mostrar mensajes en consola.
  */
 function debugLog(msg) {
   if (window.APP_DEBUG === true) {

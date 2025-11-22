@@ -1,6 +1,6 @@
 <?php
 
-function validateRegistrationForm()
+function validateAuthForm()
 {
   require_once __DIR__ . '/../../core/helpers/showError.php';
   $errors = [];
