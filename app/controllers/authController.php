@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/../../core/config/config.php';
 require_once __DIR__ . '/../../core/helpers/startSesion.php';
-require_once __DIR__ . '/../../core/helpers/validatorForm.php';
+require_once __DIR__ . '/../../core/helpers/validatorForms.php';
+require_once __DIR__ . '/../models/authModel.php';
 
 /**
  * Controlador encargado de gestionar la autenticación:
@@ -52,7 +53,6 @@ class AuthController
       }
 
       // Cargar modelo de autenticación
-      require_once __DIR__ . '/../models/AuthModel.php';
       $authModel = new AuthModel();
 
       // Intentar autenticar al usuario
@@ -99,9 +99,8 @@ class AuthController
   public function register()
   {
     // Asegurar sesión activa
-    if (session_status() === PHP_SESSION_NONE) {
-      session_start();
-    }
+    startSession();
+
 
     // Si ya está autenticado, no permitir acceso al registro
     if (isset($_SESSION['user'])) {
@@ -109,8 +108,6 @@ class AuthController
       exit();
     }
 
-    require_once __DIR__ . '/../models/authModel.php';
-    require_once __DIR__ . '/../../core/helpers/validatorForm.php';
 
     // Validar y sanitizar datos del formulario
     $data = validateAuthForm();
@@ -173,9 +170,8 @@ class AuthController
   public function logout()
   {
     // Asegurar sesión activa
-    if (session_status() === PHP_SESSION_NONE) {
-      session_start();
-    }
+    startSession();
+
 
     // Vaciar variables de sesión
     $_SESSION = [];
