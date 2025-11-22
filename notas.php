@@ -1,2 +1,2 @@
-
-global con = /keys/public,http://localhost/keys/public,http://localhost/keys/public, 
+mensajes a mostrar en mi cuenta tras modificar datos de usuario y contraseña.
+funcionalidad para elinar cuenta.
