@@ -1,6 +1,9 @@
 <!-- view: auth/login.php -->
-<?php require_once __DIR__ . '/../../../core/helpers/showError.php'; ?>
-
+<?php
+// Helper para mostrar errores de sesión
+require_once __DIR__ . '/../../../core/helpers/showError.php'; 
+?>
+<!-- Contenedor central para el formulario de login -->
 <div class="row justify-content-center mt-5">
   <div class="col-md-6">
     <h2 class="mb-4">Iniciar Sesión</h2>
@@ -19,7 +22,7 @@
 </div>
 <?php
 if (isset($_SESSION['errors'])) {
-  showError($_SESSION['errors']); // limpiar después de mostrar
+  showError($_SESSION['errors']); // limpiar después de mostrar errores
   unset($_SESSION['errors']);
   session_destroy();
 }
