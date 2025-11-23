@@ -34,10 +34,9 @@ class AuthController
 
     // Si ya está autenticado, evitar que vuelva al login
     if (isset($_SESSION['user'])) {
-      header("Location: " .  BASE_URL . "/?c=services&a=alls");
+      header("Location: " . BASE_URL . "/?c=services&a=alls");
       exit();
     }
-
 
     // Validar datos recibidos del formulario (sanitización + seguridad)
     $data = validateAuthForm();
@@ -45,7 +44,7 @@ class AuthController
     // Si se enviaron datos (POST)
     if (isset($data) && !empty($data)) {
 
-      // Validación básica
+      // Validación básica de campos
       if (empty($data['email']) || empty($data['password'])) {
         $_SESSION['errors'] = "Completa todos los campos.";
         require_once __DIR__ . '/../views/auth/login.php';
@@ -56,10 +55,11 @@ class AuthController
       $authModel = new AuthModel();
 
       // Intentar autenticar al usuario
-      $user = $authModel->loginUser($data['email'], $data['password']);
+      $login = $authModel->loginUser($data['email'], $data['password']);
 
-      // Si las credenciales son correctas
-      if ($user) {
+      // Verificamos éxito y extraemos el objeto User
+      if ($login['success']) {
+        $user = $login['user']; // aquí $user es un objeto User
 
         // Guardar datos esenciales del usuario en la sesión
         $_SESSION['user'] = [
@@ -72,7 +72,6 @@ class AuthController
         header("Location: " . BASE_URL . "/?c=services&a=alls");
         exit();
       } else {
-
         // Credenciales incorrectas
         $_SESSION['errors'] = "Usuario o contraseña incorrectos.";
         require_once __DIR__ . '/../views/auth/login.php';
@@ -133,7 +132,7 @@ class AuthController
           $register_result = $authModel->createUser(
             $data['username'],
             $data['email'],
-            password_hash($data['password'], PASSWORD_BCRYPT)
+            $data['password']
           );
         }
       }
