@@ -1,3 +1,22 @@
+  <!-- 
+  Modales de Contraseña Maestra:
+
+  Modal 1: warningModal
+    - Propósito: Advertir al usuario antes de cambiar la contraseña maestra.
+    - Contenido: Mensaje de advertencia y botones para cancelar o proceder.
+    - Botón "Cambiar contraseña" abre el siguiente modal.
+
+  Modal 2: changePasswordModal
+    - Propósito: Permitir al usuario cambiar la contraseña maestra.
+    - Formulario:
+        Campos:
+          - old_password: Contraseña actual
+          - new_password: Nueva contraseña
+          - confirm_password: Confirmación de nueva contraseña
+        Método: POST
+        Acción: <?= FULL_BASE_URL ?>/?c=users&a=changeMasterPassword
+-->
+
   <!-- Modal 1: Advertencia -->
   <div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -52,7 +71,7 @@
     </div>
   </div>
 
- 
+
   <?php
   require_once __DIR__  . '/../../../views/components/footer.php'
   ?>

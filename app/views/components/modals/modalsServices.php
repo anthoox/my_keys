@@ -1,3 +1,18 @@
+<!-- 
+  Modales de servicios:
+  1. addServiceModal: Añadir un nuevo servicio.
+     - Campos: service_name, user_name, password
+     - Opcionales comentados: category, notes
+     - Form action: /keys/public/?c=services&a=store
+
+  2. editServiceModal: Editar un servicio existente.
+     - Campos: name, user, password
+     - Form action: <?= FULL_BASE_URL ?>/?c=services&a=editService
+
+  3. delServiceModal: Eliminar un servicio.
+     - Campo hidden: service_id
+     - Form action: <?= FULL_BASE_URL ?>/?c=services&a=delService
+-->
 <!-- Modal añadir servicio -->
 <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -10,11 +25,11 @@
 
         <div class="modal-body">
           <div class="mb-3">
-            <label for="service_name" class="form-label">Nombre del servicio</label>
+            <label for="service_name" class="form-label">Servicio</label>
             <input type="text" class="form-control" id="service_name" name="service_name" required>
           </div>
           <div class="mb-3">
-            <label for="user_name" class="form-label">Nombre de usuario</label>
+            <label for="user_name" class="form-label">Usuario</label>
             <input type="text" class="form-control" id="user_name" name="user_name" required>
           </div>
           <div class="mb-3">
@@ -27,10 +42,10 @@
             <input type="text" class="form-control" id="category" name="category">
           </div> -->
 
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="notes" class="form-label">Notas (opcional)</label>
             <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
-          </div>
+          </div> -->
         </div>
 
         <div class="modal-footer">
@@ -85,7 +100,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-          <p>¿Desea eliminar esta contaseña?</p>
+          <p>¿Desea eliminar este servicio?</p>
           <input type="hidden" name="service_id" id="deleteServiceId" value="">
         </div>
         <div class="modal-footer">
