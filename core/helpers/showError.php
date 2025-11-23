@@ -1,4 +1,12 @@
 <?php
+
+/**
+ * Muestra errores en formato de alerta de Bootstrap.
+ *
+ * @param array|string $errors Array de errores o un solo mensaje de error.
+ * 
+ * Si $errors es un array, se listan todos los errores. Si es un string, se muestra como un único error.
+ */
 function showError($errors)
 {
   if (!empty($errors)) {
