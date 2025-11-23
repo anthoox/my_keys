@@ -30,20 +30,17 @@ class User
    * @param int         $id            ID del usuario.
    * @param string      $username      Nombre de usuario.
    * @param string      $email         Correo electrónico.
-   * @param string|null $password_hash Contraseña hasheada (opcional).
    * @param string|null $created_at    Fecha de creación (opcional).
    */
   public function __construct(
     int $id,
     string $username,
     string $email,
-    ?string $password_hash = null,
     ?string $created_at = null
   ) {
     $this->id = $id;
     $this->username = $username;
     $this->email = $email;
-    $this->password_hash = $password_hash;
     $this->created_at = $created_at;
   }
 
