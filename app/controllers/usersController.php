@@ -41,7 +41,10 @@ class UsersController
 
 
   /**
-   * Procesa el formulario de edición de nombre/email del usuario.
+   * Edita los datos del usuario (username y email)
+   * 
+   * Requiere que el usuario esté autenticado y que se haga mediante POST.
+   * Sanitiza y valida los datos antes de enviarlos al modelo.
    */
   public function editUserData()
   {
@@ -59,9 +62,10 @@ class UsersController
       exit();
     }
 
+    // Obtener y sanitizar datos
     $id        = $_POST['userId'] ?? null;
-    $user_name = trim($_POST['username'] ?? '');
-    $email     = trim($_POST['email'] ?? '');
+    $user_name = trim(strip_tags($_POST['username'] ?? '')); // Quita HTML y espacios
+    $email     = trim(filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL)); // Sanitiza email
 
     if (!$id) {
       $_SESSION['error_message'] = "Error: falta el ID del usuario.";
@@ -69,20 +73,25 @@ class UsersController
       exit();
     }
 
+    // Cargar modelo
     require_once __DIR__ . '/../models/UsersModel.php';
     $model = new UsersModel();
 
+    // Llamar a la función del modelo
     $updated = $model->editUserData($id, $user_name, $email);
 
+    // Mensajes de feedback
     if ($updated) {
       $_SESSION['success_message'] = "Datos actualizados correctamente.";
     } else {
       $_SESSION['error_message'] = "No se realizaron cambios o ocurrió un error al actualizar.";
     }
 
+    // Redirigir a la cuenta del usuario
     header("Location: " . BASE_URL . "/?c=users&a=account");
     exit();
   }
+
 
 
   /**

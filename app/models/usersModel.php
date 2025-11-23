@@ -1,60 +1,81 @@
 <?php
+
+declare(strict_types=1);
+
 require_once __DIR__ . '/../entities/User.php';
 require_once __DIR__ . '/../../core/database/DataBase.php';
+
 /**
- * TODO mostrar los errores en pantalla si es necesario
+ * Modelo para manejar operaciones relacionadas con los usuarios
+ * 
+ * Mejora respecto a la versión anterior:
+ * - Tipado estricto
+ * - Uso consistente de prepared statements
+ * - Transacciones solo cuando es necesario
+ * - Manejo de errores mediante logs
+ * - Cumplimiento de PSR-12 (nombres y estilo)
  */
-
-class usersModel{
-
-  private $db;
+class UsersModel
+{
+  private PDO $db;
 
   public function __construct()
   {
     $this->db = DataBase::getInstance()->getConnection();
   }
 
-  public function getUserData($user_id): mixed{
-
+  /**
+   * Obtener los datos de un usuario por su ID
+   * 
+   * @param int $user_id ID del usuario
+   * @return User|null Devuelve un objeto User si se encuentra, null si no
+   */
+  public function getUserData(int $user_id): ?User
+  {
     try {
       $stmt = $this->db->prepare(
-        "
-      SELECT * from users WHERE id = :user_id LIMIT 1"
+        "SELECT * FROM users WHERE id = :user_id LIMIT 1"
       );
-      $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-      $stmt->execute();
+      $stmt->execute(['user_id' => $user_id]);
 
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
       if ($row) {
-        $user_data = new User(
-          $row['id'],
+        return new User(
+          (int)$row['id'],
           $row['username'],
           $row['email'],
-          $row['password_hash'],
           $row['created_at']
         );
-      } else {
-        $user_data = null; // No se encontró usuario
       }
 
-      // var_dump($user_data); // Para debug
-      // die();
-
-      return $user_data;
+      return null;
     } catch (PDOException $e) {
-      error_log("Error al obtener servicios: " . $e->getMessage());
-
-      return [];
+      error_log("Error al obtener datos de usuario: " . $e->getMessage());
+      return null;
     }
   }
 
+  /**
+   * Actualiza los datos del usuario de forma dinámica
+   *
+   * @param int $user_id ID del usuario
+   * @param string|null $user_name Nuevo nombre de usuario (opcional)
+   * @param string|null $email Nuevo correo electrónico (opcional)
+   * @return bool Devuelve true si se actualizaron los datos, false en caso contrario
+   */
   public function editUserData(int $user_id, ?string $user_name = null, ?string $email = null): bool
   {
     try {
-      $this->db->beginTransaction();
+      // Validación básica
+      if ($user_name !== null && strlen($user_name) > 50) {
+        throw new InvalidArgumentException("El nombre de usuario es demasiado largo");
+      }
+      if ($email !== null && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new InvalidArgumentException("Email no válido");
+      }
 
-      // Armamos dinámicamente la consulta dependiendo de qué valores vengan
+      // Construir dinámicamente los campos a actualizar
       $fields = [];
       $params = ['id' => $user_id];
 
@@ -68,50 +89,52 @@ class usersModel{
         $params['email'] = $email;
       }
 
-      // Si no hay campos para actualizar, salimos
       if (empty($fields)) {
-        $this->db->rollBack();
-        return false;
+        return false; // No hay campos para actualizar
       }
 
       $sql = "UPDATE users SET " . implode(", ", $fields) . " WHERE id = :id";
       $stmt = $this->db->prepare($sql);
-      $result = $stmt->execute($params);
 
-      $this->db->commit();
-
-      return $result;
+      return $stmt->execute($params);
     } catch (PDOException $e) {
-      $this->db->rollBack();
-      error_log("Error en editUserData: " . $e->getMessage());
+      error_log("Error en editUserData (DB): " . $e->getMessage());
+      return false;
+    } catch (InvalidArgumentException $e) {
+      error_log("Error en editUserData (Validación): " . $e->getMessage());
       return false;
     }
   }
 
+
+  /**
+   * Cambiar la contraseña de un usuario
+   * 
+   * @param int $user_id ID del usuario
+   * @param string $old_password Contraseña actual
+   * @param string $new_password Nueva contraseña
+   * @return bool True si se actualizó correctamente, false si falla
+   */
   public function changeUserPassword(int $user_id, string $old_password, string $new_password): bool
   {
     try {
-      // 1️⃣ Obtener la contraseña actual del usuario
-      $sql = "SELECT password_hash FROM users WHERE id = :id LIMIT 1";
-      $stmt = $this->db->prepare($sql);
+      // Obtener hash actual de la contraseña
+      $stmt = $this->db->prepare("SELECT password_hash FROM users WHERE id = :id LIMIT 1");
       $stmt->execute(['id' => $user_id]);
       $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-      if (!$user) {
-        return false; // Usuario no encontrado
-      }
+      if (!$user) return false;
 
-      // 2️⃣ Verificar la contraseña actual
-      if (!password_verify($old_password, $user['password_hash'])) {
-        return false; // Contraseña incorrecta
-      }
+      // Verificar contraseña actual
+      if (!password_verify($old_password, $user['password_hash'])) return false;
 
-      // 3️⃣ Generar nuevo hash de la contraseña
+      // Generar nuevo hash
       $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
 
-      // 4️⃣ Actualizar la contraseña
-      $update_sql = "UPDATE users SET password_hash = :new_hash WHERE id = :id";
-      $update_stmt = $this->db->prepare($update_sql);
+      // Actualizar contraseña
+      $update_stmt = $this->db->prepare(
+        "UPDATE users SET password_hash = :new_hash WHERE id = :id"
+      );
       $update_stmt->execute([
         'new_hash' => $new_hash,
         'id' => $user_id
