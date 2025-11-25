@@ -48,7 +48,11 @@ class ServicesController
       require_once __DIR__ . '/../../core/helpers/renderServices.php';
       renderServices($services);
     } else {
-
+      echo
+      '<div class="container mt-3">
+      <h1 class="mb-4 ">Mis Contraseñas</h1>
+      <p class="lead fs-5 text-muted">Añade un servicio nuevo.</p>
+    <div class="row g-4">';
       // Error genérico si no se encuentran servicios
       $_SESSION['errors'] = "Error al cargar los servicios.";
     }
