@@ -4,8 +4,8 @@
 // Mostrar mensaje de éxito si existe
 if (!empty($_SESSION['success_message'])) {
   echo "
-      <div id='cnt-error' class='d-flex justify-content-center align-items-center w-100 mt-3'>
-        <div class='alert alert-success col-6'>{$_SESSION['success_message']}
+      <div id='cnt-error' class='d-flex justify-content-center align-items-center w-100 mt-3 position-absolute top-50 start-50 translate-middle'>
+        <div class='alert alert-success col-4'>{$_SESSION['success_message']}
         </div>
       </div>";
   unset($_SESSION['success_message']); // Limpiar después de mostrar
@@ -14,7 +14,7 @@ if (!empty($_SESSION['success_message'])) {
 // Mostrar mensaje de error si existe
 if (!empty($_SESSION['error_message'])) {
   echo "
-      <div id='cnt-error' class='d-flex justify-content-center align-items-center w-100 mt-3'>
+      <div id='cnt-error' class='d-flex justify-content-center align-items-center w-100 mt-3 position-absolute top-50 start-50 translate-middle'>
         <div class='alert alert-danger col-6'>{$_SESSION['error_message']}
         </div>
       </div>";

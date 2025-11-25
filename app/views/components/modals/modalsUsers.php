@@ -21,8 +21,8 @@
   <div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="warningModalLabel">Contraseña Maestra</h1>
+        <div class="modal-header bg-primary text-white">
+          <h1 class="modal-title fs-5" id="warningModalLabel">Confirmar modificación</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
@@ -44,8 +44,8 @@
     <div class="modal-dialog">
       <form method="POST" action="<?= FULL_BASE_URL ?>/?c=users&a=changeMasterPassword">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="changePasswordModalLabel">Cambiar Contraseña Maestra</h5>
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="changePasswordModalLabel">Cambiar Contraseña de Acceso</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
           <div class="modal-body">
@@ -64,7 +64,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-success">Guardar cambios</button>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
           </div>
         </div>
       </form>

@@ -16,9 +16,9 @@
 <!-- Modal añadir servicio -->
 <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content ">
       <form action="/keys/public/?c=services&a=store" method="POST">
-        <div class="modal-header">
+        <div class="modal-header bg-primary text-white">
           <h5 class="modal-title" id="addServiceModalLabel">Añadir nuevo servicio</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
@@ -62,7 +62,7 @@
   <div class="modal-dialog">
     <form id="editServiceForm" method="POST" action="<?= FULL_BASE_URL ?>/?c=services&a=editService">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header bg-primary text-white">
           <h5 class="modal-title" id="editServiceModalLabel">Editar</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
@@ -95,7 +95,7 @@
   <div class="modal-dialog">
     <form id="delServiceForm" method="POST" action="<?= FULL_BASE_URL ?>/?c=services&a=delService">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header bg-primary text-white">
           <h5 class="modal-title" id="delServiceModalLabel">Eliminar</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
