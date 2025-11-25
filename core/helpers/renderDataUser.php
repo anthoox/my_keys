@@ -54,8 +54,16 @@ function renderDataUser(?object $user_data): void
         </button>
 
         <div class='col-12 mt-2'>
-          <button type='button' class='btn btn-danger col-12'>Eliminar cuenta</button>
-        </div>
+  <button 
+    type='button' 
+    class='btn btn-danger col-12' 
+    data-bs-toggle='modal' 
+    data-bs-target='#deleteUserModal'
+    data-user-id='$user_id'>
+    Eliminar cuenta
+  </button>
+</div>
+
       </form>
     </div>";
 

@@ -146,4 +146,23 @@ class UsersModel
       return false;
     }
   }
+
+  /**
+   * Elimina (da de baja) a un usuario de la base de datos
+   *
+   * @param int $user_id
+   * @return bool True si se eliminó correctamente, false si falló
+   */
+  public function deleteUser(int $user_id): bool
+  {
+    try {
+      $stmt = $this->db->prepare("DELETE FROM users WHERE id = :id");
+      $stmt->execute(['id' => $user_id]);
+
+      return $stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+      error_log("Error al eliminar usuario: " . $e->getMessage());
+      return false;
+    }
+  }
 }

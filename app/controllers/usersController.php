@@ -145,4 +145,32 @@ class UsersController
     header("Location: " . BASE_URL . "/?c=users&a=account");
     exit();
   }
+
+  /**
+   * deleteUser
+   * ----------
+   * Maneja la eliminación de la cuenta del usuario.
+   * Requiere confirmación desde el modal.
+   */
+  public function deleteUser()
+  {
+    startSession();
+
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['userId'])) {
+      $model = new UsersModel();
+
+      $userId = (int) $_POST['userId'];
+      if ($model->deleteUser($userId)) {
+        $_SESSION['success_message'] = "Cuenta eliminada correctamente.";
+        session_destroy(); // opcional, cerrar sesión tras eliminar
+        header("Location: " . FULL_BASE_URL);
+        exit;
+      } else {
+        $_SESSION['error_message'] = "No se pudo eliminar la cuenta. Inténtalo de nuevo.";
+        header("Location: " . FULL_BASE_URL . "/?c=users&a=account");
+        exit;
+      }
+    }
+  }
 }

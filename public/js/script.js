@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initCopyPassword();
   initShowPassword();
   initAutoHideErrors();
+  initDeleteUserModal();
+
   debugLog("JS cargado y módulos inicializados");
 });
 
@@ -293,3 +295,24 @@ function initAutoHideErrors() {
     }, 3000);
   }
 }
+
+/**
+ * initDeleteUserModal
+ * ------------------
+ * Al abrir el modal de eliminación, inserta el user_id en el input oculto del formulario.
+ */
+function initDeleteUserModal() {
+  const deleteModalEl = document.getElementById('deleteUserModal');
+  if (!deleteModalEl) return;
+
+  deleteModalEl.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget; // Botón que disparó el modal
+    const userId = button.getAttribute('data-user-id');
+    const input = deleteModalEl.querySelector('#deleteUserId');
+
+    if (input && userId) {
+      input.value = userId;
+    }
+  });
+}
+
