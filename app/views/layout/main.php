@@ -11,4 +11,4 @@ startSession();
 require_once __DIR__ . '/../../views/components/header.php'; 
 
 ?>
-<div class="container mt-4">
+<div class="container mt-4 d-flex flex-column justify-content-center">

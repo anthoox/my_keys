@@ -1,35 +1,46 @@
-<!-- public/index.php -->
-<!-- Aqui se inicia la aplicacion y redirigue al login -->
 <?php
+// public/index.php
+
+/**
+ * Punto de entrada de la aplicación.
+ * 
+ * Funciona de dos formas:
+ * 1. Si no hay parámetros en la URL → carga directamente la vista de inicio (home/index.php)
+ * 2. Si hay parámetros 'c' (controlador) y 'a' (acción) → instancia el controlador y ejecuta la acción
+ */
 
 require_once __DIR__ . '/autoload.php';
 
 // MODO DEBUG (true = muestra errores, false = limpio para producción)
 define('DEBUG_MODE', true);
-// Código para manejar controladores y acciones. Página de manejo centralizada.
 
-// Función para redirigir siempre al login
-function redirectToLogin()
-{
-  header("Location: " . FULL_BASE_URL . "/?c=auth&a=login");
-  exit();
-}
-
-// Evitar que PHP muestre errores en producción
+// Configuración de errores según modo debug
 if (!DEBUG_MODE) {
   ini_set('display_errors', 0);
   error_reporting(0);
 }
 
-if (empty($_GET)) {
-  require_once '../app/views/layout/main.php';
-  redirectToLogin();
+// Función de redirección al login (para compatibilidad con URLs inválidas)
+function redirectToLogin(): void
+{
+  header("Location: " . FULL_BASE_URL . "/?c=home&a=index");
+  exit();
 }
 
+/**
+ * Si no hay parámetros GET → mostramos la vista home directamente
+ * Esto permite que al entrar a 'public/' se vea la pantalla de inicio sin controlador.
+ */
+if (empty($_GET)) {
+  require_once '../app/views/layout/main.php'; // Layout general (nav, footer, etc.)
+  require_once '../app/views/home/index.php';  // Vista de inicio
+  exit();
+}
+
+// Layout general (si vamos a cargar controlador)
 require_once '../app/views/layout/main.php';
 
-
-// Si no viene "c" en la URL → error → login
+// Si no viene el controlador → redirige a login
 if (!isset($_GET['c'])) {
   if (DEBUG_MODE) {
     // echo "Controlador no especificado";
@@ -37,6 +48,7 @@ if (!isset($_GET['c'])) {
   redirectToLogin();
 }
 
+// Nombre del controlador
 $controller_name = $_GET['c'] . 'Controller';
 
 // Verificar existencia del controlador
@@ -47,6 +59,7 @@ if (!class_exists($controller_name)) {
   redirectToLogin();
 }
 
+// Instanciar el controlador
 $controller = new $controller_name();
 
 // Verificar existencia de la acción
@@ -56,6 +69,7 @@ if (!isset($_GET['a']) || !method_exists($controller, $_GET['a'])) {
   }
   redirectToLogin();
 }
-// Si todo OK → ejecutar acción
+
+// Ejecutar acción
 $action = $_GET['a'];
 $controller->$action();

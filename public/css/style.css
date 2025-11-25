@@ -26,3 +26,12 @@
 .card:hover {
   filter: brightness(0.98);
 }
+
+.hero-image img {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  /* para centrarla */
+}
