@@ -14,13 +14,21 @@
 
 // Mostrar mensaje de éxito si existe
 if (!empty($_SESSION['success_message'])) {
-  echo "<div class='alert alert-success'>{$_SESSION['success_message']}</div>";
+  echo "
+      <div class='d-flex justify-content-center align-items-center w-100 mt-3'>
+        <div class='alert alert-success col-6'>{$_SESSION['success_message']}
+        </div>
+      </div>";
   unset($_SESSION['success_message']); // Limpiar después de mostrar
 }
 
 // Mostrar mensaje de error si existe
 if (!empty($_SESSION['error_message'])) {
-  echo "<div class='alert alert-danger'>{$_SESSION['error_message']}</div>";
+  echo "
+      <div class='d-flex justify-content-center align-items-center w-100 mt-3'>
+        <div class='alert alert-danger col-6'>{$_SESSION['error_message']}
+        </div>
+      </div>";
   unset($_SESSION['error_message']); // Limpiar después de mostrar
 }
 ?>
