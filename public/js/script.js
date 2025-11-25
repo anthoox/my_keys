@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCopyUsername();
   initCopyPassword();
   initShowPassword();
-
+  initAutoHideErrors();
   debugLog("JS cargado y módulos inicializados");
 });
 
@@ -226,4 +226,70 @@ function initShowPassword() {
 
     });
   });
+}
+
+/**
+ * initAutoHideErrors
+ * ------------------
+ * Gestiona automáticamente la desaparición de los mensajes de error o éxito
+ * mostrados en la página dentro del contenedor con id="cnt-error".
+ *
+ * Funcionamiento:
+ * 1. Detecta si ya existe un mensaje en la página al cargar el DOM:
+ *    - Si existe, espera 3 segundos antes de aplicar la clase "fade-out".
+ *    - Después de la transición (0.6s), oculta completamente el contenedor.
+ *
+ * 2. Monitorea cambios en el DOM usando MutationObserver:
+ *    - Si se agrega dinámicamente un nuevo contenedor con id="cnt-error",
+ *      se aplica el mismo comportamiento de ocultar tras 3 segundos.
+ *
+ * Esto permite que tanto mensajes ya existentes como mensajes generados
+ * dinámicamente desaparezcan de forma automática y suave.
+ *
+ * Requisitos:
+ * - El contenedor debe tener id="cnt-error".
+ * - Se recomienda que la clase "fade-out" tenga una transición CSS definida
+ *   para suavizar la desaparición (por ejemplo, opacity 0 y transición de 0.6s).
+ *
+ * Ejemplo CSS recomendado:
+ *   #cnt-error.fade-out {
+ *       opacity: 0;
+ *       transition: opacity 0.6s ease-out;
+ *   }
+ */
+function initAutoHideErrors() {
+
+  // Observador para detectar nuevos mensajes dinámicos
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        // Verificar si el nodo agregado es el contenedor de error
+        if (node.id === 'cnt-error') {
+          // Esperar 3 segundos antes de aplicar fade-out
+          setTimeout(() => {
+            node.classList.add("fade-out");
+
+            // Después de la transición, ocultar completamente
+            setTimeout(() => {
+              node.style.display = "none";
+            }, 600); // Tiempo de transición definido en CSS
+          }, 3000); // Tiempo visible antes de desaparecer
+        }
+      });
+    });
+  });
+
+  // Configuración del observador: vigilar todos los hijos y subárboles del body
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  // También aplicar efecto a cualquier mensaje que ya exista al cargar la página
+  const existing = document.getElementById('cnt-error');
+  if (existing) {
+    setTimeout(() => {
+      existing.classList.add("fade-out");
+      setTimeout(() => {
+        existing.style.display = "none";
+      }, 600);
+    }, 3000);
+  }
 }

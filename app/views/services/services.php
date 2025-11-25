@@ -1,5 +1,27 @@
 <!-- view: services/services.php -->
 
+<?php
+// Mostrar mensaje de éxito si existe
+if (!empty($_SESSION['success_message'])) {
+  echo "
+      <div id='cnt-error' class='d-flex justify-content-center align-items-center w-100 mt-3'>
+        <div class='alert alert-success col-6'>{$_SESSION['success_message']}
+        </div>
+      </div>";
+  unset($_SESSION['success_message']); // Limpiar después de mostrar
+}
+
+// Mostrar mensaje de error si existe
+if (!empty($_SESSION['error_message'])) {
+  echo "
+      <div id='cnt-error' class='d-flex justify-content-center align-items-center w-100 mt-3'>
+        <div class='alert alert-danger col-6'>{$_SESSION['error_message']}
+        </div>
+      </div>";
+  unset($_SESSION['error_message']); // Limpiar después de mostrar
+}
+?>
+
 <!-- Cierre del contenedor abierto en layout/main.php -->
 </div>
 
@@ -16,6 +38,7 @@
 
 
 <?php
+
 // Incluir los modales relacionados con servicios (añadir, editar, eliminar)
 require_once __DIR__ . '/../../../app/views/components/modals/modalsServices.php';
 

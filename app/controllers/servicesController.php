@@ -263,9 +263,9 @@ class ServicesController
       $updated = $serviceModel->editService($service_id, $name, $user, $password);
 
       if ($updated) {
-        $_SESSION['success'] = "Servicio actualizado correctamente.";
+        $_SESSION['success_message'] = "Modificación realizada.";
       } else {
-        $_SESSION['errors'] = "No se pudo actualizar el servicio.";
+        $_SESSION['error_message'] = "No se pudo realizar la modificación.";
       }
 
       header("Location: " . BASE_URL . "/?c=services&a=alls");
