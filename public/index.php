@@ -12,7 +12,7 @@
 require_once __DIR__ . '/autoload.php';
 
 // MODO DEBUG (true = muestra errores, false = limpio para producción)
-define('DEBUG_MODE', true);
+define('DEBUG_MODE', false);
 
 // Configuración de errores según modo debug
 if (!DEBUG_MODE) {
