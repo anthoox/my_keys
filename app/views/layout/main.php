@@ -8,6 +8,9 @@ require_once __DIR__ . '/../../../core/helpers/startSesion.php';
 
 startSession();
 
+require_once __DIR__ . '/../../../core/helpers/sessionHelper.php';
+handleSessionTimeout();
+
 require_once __DIR__ . '/../../views/components/header.php'; 
 
 ?>

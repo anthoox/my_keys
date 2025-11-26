@@ -1,7 +1,7 @@
 <!-- view: auth/login.php -->
 <?php
 // Helper para mostrar errores de sesión
-require_once __DIR__ . '/../../../core/helpers/showError.php'; 
+require_once __DIR__ . '/../../../core/helpers/showError.php';
 ?>
 <!-- Contenedor central para el formulario de login -->
 <div class="row justify-content-center mt-5">
@@ -20,13 +20,22 @@ require_once __DIR__ . '/../../../core/helpers/showError.php';
     </form>
   </div>
 </div>
-<?php
-if (isset($_SESSION['errors'])) {
-  showError($_SESSION['errors']); // limpiar después de mostrar errores
-  unset($_SESSION['errors']);
-  session_destroy();
-}
+<?php if (isset($_GET['timeout']) && $_GET['timeout'] == 1): ?>
+  <div id='cnt-error' class='d-flex justify-content-center align-items-center w-100 mt-3'>
+
+    <div class="alert alert-warning text-center col-6">
+      Tu sesión ha expirado por inactividad.
+    </div>
+    </div>
+  <?php endif; ?>
+
+  <?php
+  if (isset($_SESSION['errors'])) {
+    showError($_SESSION['errors']); // limpiar después de mostrar errores
+    unset($_SESSION['errors']);
+    session_destroy();
+  }
 
 
 
-?>
+  ?>
