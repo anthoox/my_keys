@@ -57,7 +57,7 @@ Todo está desarrollado con PHP bajo un patrón MVC propio, Bootstrap y PDO para
 1. Clonar el repositorio:
 
 ```bash
-git clone https://github.com/anthoox/my_keys.git
+git clone https://github.com/anthoox/gestor_de_claves.git
 ```
 2. Copiar a la carpeta de tu servidor local (htdocs o equivalente).
 
@@ -67,6 +67,8 @@ git clone https://github.com/anthoox/my_keys.git
     DB_USER=root
     DB_PASS=tu_password
     DB_CHARSET=utf8mb4
+    ENCRYPT_KEY="tu_propio_cifrado"
+    ENCRYPT_IV="tu_propio_cifrado"
 
 3. Importar database/database.sql en MySQL.
 
